@@ -16,7 +16,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { CAPITAL_SOURCES } from '@/lib/constants';
 import { getActiveTransactions } from '@/lib/mock-data';
 import type { Cents, CapitalSource, PeriodType, DateRange } from '@/lib/types';
 import { formatCentsIndian, formatPercentage } from '@/lib/utils/format';
@@ -25,7 +24,7 @@ import { AddCapitalSourceDialog } from '@/components/capital/AddCapitalSourceDia
 import { PeriodSelector } from '@/components/capital/PeriodSelector';
 import { WACCTrendChart } from '@/components/capital/WACCTrendChart';
 import type { WACCTrendDataPoint } from '@/components/capital/WACCTrendChart';
-import { getCapitalHistory, initializeCapitalHistory } from '@/lib/data/capital-history-store';
+import { getCapitalHistory, initializeCapitalHistory, getActiveCapitalSources } from '@/lib/data/capital-history-store';
 import { calculateWACCAtDate, calculatePeriodWACC, getWACCTrendData } from '@/lib/calculations/wacc';
 import { getPeriodDates, subtractDays } from '@/lib/utils/date-period';
 
@@ -44,6 +43,9 @@ interface CapitalSourceWithUtilization extends CapitalSource {
 function calculateCapitalUtilization(): CapitalSourceWithUtilization[] {
   const activeTransactions = getActiveTransactions();
 
+  // Get active capital sources from history store (not static constant)
+  const activeSources = getActiveCapitalSources();
+
   // Group active transactions by capital source and sum amounts
   const usedBySource = new Map<string, number>();
 
@@ -56,7 +58,7 @@ function calculateCapitalUtilization(): CapitalSourceWithUtilization[] {
   });
 
   // Create new capital sources with updated usage
-  return CAPITAL_SOURCES.map((source) => {
+  return activeSources.map((source) => {
     const usedCents = (usedBySource.get(source.name) || 0) as Cents;
     const remainingCents = (source.availableCents - usedCents) as Cents;
     const utilizationRate = source.availableCents > 0
@@ -279,9 +281,7 @@ export default function CapitalPage(): React.ReactElement {
 
   // Handler for successful capital source addition
   const handleCapitalSourceAdded = () => {
-    // Reinitialize capital history to pick up the new source
-    initializeCapitalHistory();
-    // Force re-render
+    // Force re-render to pick up the new source from history
     setRefreshKey((prev) => prev + 1);
   };
 
