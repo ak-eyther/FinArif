@@ -13,7 +13,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { getActiveTransactions } from '@/lib/mock-data';
-import { formatCentsCompact, formatPercentage } from '@/lib/utils/format';
+import { formatCentsIndian, formatPercentage } from '@/lib/utils/format';
 import type { Transaction, RiskLevel, Cents } from '@/lib/types';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { useMemo } from 'react';
@@ -81,7 +81,7 @@ function CustomTooltip({ active, payload }: { active?: boolean; payload?: Array<
       <div className="space-y-1 text-xs">
         <p>Provider Risk: <span className="font-medium">{data.providerRisk}</span></p>
         <p>Insurance Risk: <span className="font-medium">{data.insuranceRisk}</span></p>
-        <p>Amount: <span className="font-medium">{formatCentsCompact(data.amount as Cents)}</span></p>
+        <p>Amount: <span className="font-medium">{formatCentsIndian(data.amount as Cents)}</span></p>
         <p>
           Risk Level:{' '}
           <Badge
@@ -373,7 +373,7 @@ export default function RiskPage(): React.ReactElement {
                     <div>
                       <p className="text-sm font-medium leading-none">{item.name}</p>
                       <p className="text-sm text-muted-foreground mt-1">
-                        {formatCentsCompact(item.exposureCents)}
+                        {formatCentsIndian(item.exposureCents)}
                       </p>
                     </div>
                   </div>
@@ -406,7 +406,7 @@ export default function RiskPage(): React.ReactElement {
                     <div>
                       <p className="text-sm font-medium leading-none">{item.name}</p>
                       <p className="text-sm text-muted-foreground mt-1">
-                        {formatCentsCompact(item.exposureCents)}
+                        {formatCentsIndian(item.exposureCents)}
                       </p>
                     </div>
                   </div>

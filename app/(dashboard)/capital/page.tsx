@@ -19,7 +19,7 @@ import {
 import { CAPITAL_SOURCES } from '@/lib/constants';
 import { getActiveTransactions } from '@/lib/mock-data';
 import type { Cents, CapitalSource } from '@/lib/types';
-import { formatCents, formatPercentage } from '@/lib/utils/format';
+import { formatCentsIndian, formatPercentage } from '@/lib/utils/format';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 /**
@@ -171,7 +171,7 @@ export default function CapitalPage(): React.ReactElement {
             <CardTitle className="text-sm font-medium">Total Available</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCents(totalAvailable)}</div>
+            <div className="text-2xl font-bold">{formatCentsIndian(totalAvailable)}</div>
             <p className="text-xs text-muted-foreground">
               Across {capitalSources.length} sources
             </p>
@@ -183,7 +183,7 @@ export default function CapitalPage(): React.ReactElement {
             <CardTitle className="text-sm font-medium">Total Utilized</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCents(totalUsed)}</div>
+            <div className="text-2xl font-bold">{formatCentsIndian(totalUsed)}</div>
             <p className="text-xs text-muted-foreground">
               {formatPercentage(overallUtilization)} of available
             </p>
@@ -195,7 +195,7 @@ export default function CapitalPage(): React.ReactElement {
             <CardTitle className="text-sm font-medium">Remaining Capital</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCents(totalRemaining)}</div>
+            <div className="text-2xl font-bold">{formatCentsIndian(totalRemaining)}</div>
             <p className="text-xs text-muted-foreground">
               Available for deployment
             </p>
@@ -280,13 +280,13 @@ export default function CapitalPage(): React.ReactElement {
                     {formatPercentage(source.annualRate)}
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatCents(source.availableCents)}
+                    {formatCentsIndian(source.availableCents)}
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatCents(source.usedCents)}
+                    {formatCentsIndian(source.usedCents)}
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatCents(source.remainingCents)}
+                    {formatCentsIndian(source.remainingCents)}
                   </TableCell>
                   <TableCell className="text-right">
                     <span

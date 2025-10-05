@@ -51,6 +51,70 @@ export function formatCentsCompact(cents: Cents): string {
 }
 
 /**
+ * Format cents as Indian currency (Lakhs/Crores)
+ *
+ * @param cents - Amount in cents
+ * @param showSymbol - Whether to show currency symbol (default: true)
+ * @returns Formatted currency string in Indian format
+ *
+ * @example
+ * formatCentsIndian(10000000) // "KES 1.00 Lakh"
+ * formatCentsIndian(1000000000) // "KES 10.00 Crore"
+ */
+export function formatCentsIndian(cents: Cents, showSymbol: boolean = true): string {
+  const kes = centsToKes(cents);
+  const symbol = showSymbol ? `${CURRENCY.SYMBOL} ` : '';
+
+  // 1 Crore = 10,000,000 (1 followed by 7 zeros)
+  if (kes >= 10000000) {
+    const crores = kes / 10000000;
+    return `${symbol}${crores.toFixed(2)} Cr`;
+  }
+
+  // 1 Lakh = 100,000 (1 followed by 5 zeros)
+  if (kes >= 100000) {
+    const lakhs = kes / 100000;
+    return `${symbol}${lakhs.toFixed(2)} L`;
+  }
+
+  // For amounts less than 1 Lakh, use regular formatting with Indian grouping
+  return `${symbol}${formatIndianNumber(kes)}`;
+}
+
+/**
+ * Format number with Indian numbering system (Lakhs/Crores grouping)
+ *
+ * @param value - Number to format
+ * @returns Formatted number string with Indian grouping
+ *
+ * @example
+ * formatIndianNumber(1234567) // "12,34,567"
+ * formatIndianNumber(12345) // "12,345"
+ */
+export function formatIndianNumber(value: number): string {
+  const str = value.toString();
+  const [intPart, decPart] = str.split('.');
+
+  if (intPart.length <= 3) {
+    return decPart ? `${intPart}.${decPart}` : intPart;
+  }
+
+  // Indian grouping: last 3 digits, then groups of 2
+  const lastThree = intPart.slice(-3);
+  const remaining = intPart.slice(0, -3);
+
+  // Group remaining digits in pairs from right to left
+  const groups: string[] = [];
+  for (let i = remaining.length; i > 0; i -= 2) {
+    const start = Math.max(0, i - 2);
+    groups.unshift(remaining.slice(start, i));
+  }
+
+  const formatted = groups.join(',') + ',' + lastThree;
+  return decPart ? `${formatted}.${decPart}` : formatted;
+}
+
+/**
  * Format decimal as percentage
  *
  * @param value - Decimal value (e.g., 0.045 for 4.5%)

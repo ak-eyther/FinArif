@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { getTransactionById } from '@/lib/mock-data';
 import { calculatePL } from '@/lib/calculations/profit-loss';
-import { formatCents, formatPercentage, formatDate, formatDays } from '@/lib/utils/format';
+import { formatCentsIndian, formatPercentage, formatDate, formatDays } from '@/lib/utils/format';
 import type { RiskLevel } from '@/lib/types';
 
 /**
@@ -111,7 +111,7 @@ export default function TransactionDetailPage({ params }: PageProps): React.Reac
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Claim Amount</p>
-                <p className="text-2xl font-bold">{formatCents(transaction.claimAmountCents)}</p>
+                <p className="text-2xl font-bold">{formatCentsIndian(transaction.claimAmountCents)}</p>
               </div>
             </div>
 
@@ -159,7 +159,7 @@ export default function TransactionDetailPage({ params }: PageProps): React.Reac
               <p className="font-medium">Claim Amount</p>
               <p className="text-sm text-muted-foreground">Original claim value</p>
             </div>
-            <p className="text-xl font-bold">{formatCents(pl.claimAmountCents)}</p>
+            <p className="text-xl font-bold">{formatCentsIndian(pl.claimAmountCents)}</p>
           </div>
 
           <Separator />
@@ -173,7 +173,7 @@ export default function TransactionDetailPage({ params }: PageProps): React.Reac
               </p>
             </div>
             <p className="text-xl font-bold text-green-900 dark:text-green-100">
-              +{formatCents(pl.revenueCents)}
+              +{formatCentsIndian(pl.revenueCents)}
             </p>
           </div>
 
@@ -195,7 +195,7 @@ export default function TransactionDetailPage({ params }: PageProps): React.Reac
               </p>
             </div>
             <p className="text-xl font-bold text-red-600 dark:text-red-400">
-              -{formatCents(pl.capitalCostCents)}
+              -{formatCentsIndian(pl.capitalCostCents)}
             </p>
           </div>
 
@@ -208,7 +208,7 @@ export default function TransactionDetailPage({ params }: PageProps): React.Reac
               </p>
             </div>
             <p className="text-xl font-bold text-red-600 dark:text-red-400">
-              -{formatCents(pl.operatingCostCents)}
+              -{formatCentsIndian(pl.operatingCostCents)}
             </p>
           </div>
 
@@ -221,7 +221,7 @@ export default function TransactionDetailPage({ params }: PageProps): React.Reac
               </p>
             </div>
             <p className="text-xl font-bold text-red-600 dark:text-red-400">
-              -{formatCents(pl.defaultProvisionCents)}
+              -{formatCentsIndian(pl.defaultProvisionCents)}
             </p>
           </div>
 
@@ -236,7 +236,7 @@ export default function TransactionDetailPage({ params }: PageProps): React.Reac
               </p>
             </div>
             <p className="text-xl font-bold text-red-900 dark:text-red-100">
-              -{formatCents(pl.totalCostsCents)}
+              -{formatCentsIndian(pl.totalCostsCents)}
             </p>
           </div>
 
@@ -251,7 +251,7 @@ export default function TransactionDetailPage({ params }: PageProps): React.Reac
               </p>
             </div>
             <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
-              {formatCents(pl.netProfitCents)}
+              {formatCentsIndian(pl.netProfitCents)}
             </p>
           </div>
 

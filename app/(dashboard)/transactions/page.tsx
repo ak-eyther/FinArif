@@ -26,7 +26,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { getTransactions } from '@/lib/mock-data';
-import { formatCents, formatDate } from '@/lib/utils/format';
+import { formatCentsIndian, formatDate } from '@/lib/utils/format';
 import type { Transaction, TransactionStatus, RiskLevel } from '@/lib/types';
 
 /**
@@ -343,7 +343,7 @@ export default function TransactionsPage() {
                       <TableCell>{transaction.providerName}</TableCell>
                       <TableCell>{transaction.insuranceName}</TableCell>
                       <TableCell className="text-right font-medium">
-                        {formatCents(transaction.claimAmountCents)}
+                        {formatCentsIndian(transaction.claimAmountCents)}
                       </TableCell>
                       <TableCell>
                         {formatDate(transaction.disbursementDate)}

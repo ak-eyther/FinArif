@@ -6,7 +6,7 @@
 
 import { getTransactions } from '@/lib/mock-data';
 import { calculateDashboardMetrics } from '@/lib/calculations/dashboard';
-import { formatCents, formatPercentage, formatDateShort } from '@/lib/utils/format';
+import { formatCentsIndian, formatPercentage, formatDateShort } from '@/lib/utils/format';
 import { MetricCard } from '@/components/dashboard/metric-card';
 import {
   Table,
@@ -85,7 +85,7 @@ export default function DashboardPage(): React.ReactElement {
         {/* Metric 1: Total Outstanding to Providers */}
         <MetricCard
           title="Total Outstanding to Providers"
-          value={formatCents(metrics.totalOutstandingCents)}
+          value={formatCentsIndian(metrics.totalOutstandingCents)}
           trend={metrics.trendOutstanding}
           icon={DollarSign}
           description="Active claims financed"
@@ -94,7 +94,7 @@ export default function DashboardPage(): React.ReactElement {
         {/* Metric 2: Total Expected from Insurers */}
         <MetricCard
           title="Total Expected from Insurers"
-          value={formatCents(metrics.totalExpectedCents)}
+          value={formatCentsIndian(metrics.totalExpectedCents)}
           trend={metrics.trendExpected}
           icon={TrendingUp}
           description="Expected collections + fees"
@@ -103,7 +103,7 @@ export default function DashboardPage(): React.ReactElement {
         {/* Metric 3: Net Exposure */}
         <MetricCard
           title="Net Exposure"
-          value={formatCents(metrics.netExposureCents)}
+          value={formatCentsIndian(metrics.netExposureCents)}
           trend={metrics.trendExposure}
           icon={AlertCircle}
           description="Expected profit from active claims"
@@ -151,7 +151,7 @@ export default function DashboardPage(): React.ReactElement {
 
                   {/* Claim Amount */}
                   <TableCell className="text-right font-medium">
-                    {formatCents(tx.claimAmountCents)}
+                    {formatCentsIndian(tx.claimAmountCents)}
                   </TableCell>
 
                   {/* Disbursement Date */}
