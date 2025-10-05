@@ -6,7 +6,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
@@ -18,9 +18,16 @@ import {
 } from '@/components/ui/table';
 import { CAPITAL_SOURCES } from '@/lib/constants';
 import { getActiveTransactions } from '@/lib/mock-data';
-import type { Cents, CapitalSource } from '@/lib/types';
+import type { Cents, CapitalSource, PeriodType, DateRange } from '@/lib/types';
 import { formatCentsIndian, formatPercentage } from '@/lib/utils/format';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { AddCapitalSourceDialog } from '@/components/capital/AddCapitalSourceDialog';
+import { PeriodSelector } from '@/components/capital/PeriodSelector';
+import { WACCTrendChart } from '@/components/capital/WACCTrendChart';
+import type { WACCTrendDataPoint } from '@/components/capital/WACCTrendChart';
+import { getCapitalHistory, initializeCapitalHistory } from '@/lib/data/capital-history-store';
+import { calculateWACCAtDate, calculatePeriodWACC, getWACCTrendData } from '@/lib/calculations/wacc';
+import { getPeriodDates, subtractDays } from '@/lib/utils/date-period';
 
 /**
  * Extended capital source with calculated utilization
@@ -137,6 +144,27 @@ function CustomTooltip({ active, payload }: {
  * Capital Management Page Component
  */
 export default function CapitalPage(): React.ReactElement {
+  // State for dialog
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // State for forcing re-render when capital sources change
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // State for period selection
+  const [selectedPeriod, setSelectedPeriod] = useState<{
+    periodType: PeriodType;
+    dateRange: DateRange;
+  }>({
+    periodType: 'monthly',
+    dateRange: getPeriodDates('monthly', new Date()),
+  });
+
+  // Initialize capital history on mount
+  useEffect(() => {
+    initializeCapitalHistory();
+    setRefreshKey((prev) => prev + 1);
+  }, []);
+
   const capitalSources = calculateCapitalUtilization();
   const chartData = prepareChartData(capitalSources);
 
@@ -154,18 +182,128 @@ export default function CapitalPage(): React.ReactElement {
   const totalRemaining = (totalAvailable - totalUsed) as Cents;
   const overallUtilization = totalAvailable > 0 ? totalUsed / totalAvailable : 0;
 
+  // Get capital history for WACC calculations
+  const capitalHistory = getCapitalHistory();
+
+  // Calculate current WACC
+  const currentWACCSnapshot = calculateWACCAtDate(new Date(), capitalHistory);
+  const currentWACC = currentWACCSnapshot.wacc;
+
+  // Calculate period WACC metrics
+  const periodWACC = calculatePeriodWACC(
+    selectedPeriod.periodType,
+    selectedPeriod.dateRange.startDate,
+    capitalHistory
+  );
+
+  // Generate trend data based on period type
+  const generateTrendData = (): WACCTrendDataPoint[] => {
+    const now = new Date();
+    let periods: DateRange[] = [];
+
+    switch (selectedPeriod.periodType) {
+      case 'monthly': {
+        // Show last 12 months
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+
+        for (let i = 11; i >= 0; i--) {
+          const date = new Date(currentYear, currentMonth - i, 1);
+          const monthPeriod = getPeriodDates('monthly', date);
+          periods.push(monthPeriod);
+        }
+        break;
+      }
+
+      case 'quarterly': {
+        // Show last 4 quarters
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+        const currentQuarter = Math.floor(currentMonth / 3);
+
+        for (let i = 3; i >= 0; i--) {
+          const quarterOffset = currentQuarter - i;
+          const year = currentYear + Math.floor(quarterOffset / 4);
+          const quarter = ((quarterOffset % 4) + 4) % 4;
+          const date = new Date(year, quarter * 3, 1);
+          const quarterPeriod = getPeriodDates('quarterly', date);
+          periods.push(quarterPeriod);
+        }
+        break;
+      }
+
+      case 'yearly': {
+        // Show last 3 years
+        const currentYear = now.getFullYear();
+
+        for (let i = 2; i >= 0; i--) {
+          const date = new Date(currentYear - i, 0, 1);
+          const yearPeriod = getPeriodDates('yearly', date);
+          periods.push(yearPeriod);
+        }
+        break;
+      }
+
+      case '60-day':
+      case '90-day': {
+        // Show last 6 rolling periods
+        const days = selectedPeriod.periodType === '60-day' ? 60 : 90;
+
+        for (let i = 5; i >= 0; i--) {
+          const startDate = subtractDays(now, days * (i + 1));
+          const period = getPeriodDates(selectedPeriod.periodType, startDate);
+          periods.push(period);
+        }
+        break;
+      }
+
+      case 'custom': {
+        // Show just the selected period
+        periods = [selectedPeriod.dateRange];
+        break;
+      }
+    }
+
+    // Generate trend data from periods
+    const trendData = getWACCTrendData(periods, capitalHistory);
+
+    // Convert to WACCTrendDataPoint format
+    return trendData.map((point) => ({
+      period: point.period,
+      wacc: point.wacc,
+      totalCapital: point.totalCapital,
+    }));
+  };
+
+  const trendData = generateTrendData();
+
+  // Handler for successful capital source addition
+  const handleCapitalSourceAdded = () => {
+    // Reinitialize capital history to pick up the new source
+    initializeCapitalHistory();
+    // Force re-render
+    setRefreshKey((prev) => prev + 1);
+  };
+
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6" key={refreshKey}>
       {/* Page Header */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Capital Management</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold tracking-tight">Capital Management</h1>
+          <AddCapitalSourceDialog
+            isOpen={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+            onSuccess={handleCapitalSourceAdded}
+          />
+        </div>
         <p className="text-muted-foreground">
           Monitor capital sources and utilization across your portfolio
         </p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-5">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Available</CardTitle>
@@ -215,6 +353,20 @@ export default function CapitalPage(): React.ReactElement {
             </p>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Current WACC</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {formatPercentage(currentWACC)}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Weighted average cost
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Utilization Bar Chart */}
@@ -249,6 +401,56 @@ export default function CapitalPage(): React.ReactElement {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      {/* WACC Analysis Over Time */}
+      <Card>
+        <CardHeader>
+          <CardTitle>WACC Analysis Over Time</CardTitle>
+          <CardDescription>
+            Weighted Average Cost of Capital trends across different time periods
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Period Selector */}
+          <PeriodSelector
+            value={selectedPeriod}
+            onChange={setSelectedPeriod}
+          />
+
+          {/* Period Metrics */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="rounded-lg border p-4">
+              <div className="text-sm font-medium text-muted-foreground">
+                Start WACC
+              </div>
+              <div className="mt-2 text-2xl font-bold">
+                {formatPercentage(periodWACC.start)}
+              </div>
+            </div>
+            <div className="rounded-lg border p-4">
+              <div className="text-sm font-medium text-muted-foreground">
+                End WACC
+              </div>
+              <div className="mt-2 text-2xl font-bold">
+                {formatPercentage(periodWACC.end)}
+              </div>
+            </div>
+            <div className="rounded-lg border p-4">
+              <div className="text-sm font-medium text-muted-foreground">
+                Average WACC
+              </div>
+              <div className="mt-2 text-2xl font-bold">
+                {formatPercentage(periodWACC.average)}
+              </div>
+            </div>
+          </div>
+
+          {/* WACC Trend Chart */}
+          <div className="mt-6">
+            <WACCTrendChart data={trendData} height={350} />
+          </div>
         </CardContent>
       </Card>
 
