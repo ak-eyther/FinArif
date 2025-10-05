@@ -13,15 +13,22 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith('/');
       const isOnLogin = nextUrl.pathname.startsWith('/login');
 
-      if (isOnDashboard && !isOnLogin) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn && isOnLogin) {
-        return Response.redirect(new URL('/', nextUrl));
+      // Allow login page for everyone
+      if (isOnLogin) {
+        // Redirect logged-in users away from login
+        if (isLoggedIn) {
+          return Response.redirect(new URL('/', nextUrl));
+        }
+        return true;
       }
+
+      // Protect all other routes - require authentication
+      if (!isLoggedIn) {
+        return false; // Redirect unauthenticated users to login page
+      }
+
       return true;
     },
     async jwt({ token, user }) {

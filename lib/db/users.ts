@@ -6,10 +6,9 @@
 import bcrypt from 'bcryptjs';
 import type { User } from '@/lib/types/auth';
 
-// Hash password helper
-const hashPassword = (password: string): string => {
-  return bcrypt.hashSync(password, 10);
-};
+// Pre-hashed password for 'password123'
+// Generated with: bcrypt.hashSync('password123', 10)
+const HASHED_PASSWORD = '$2a$10$YQ98PzLGFJmEKkFmCrXYX.b5SvVf8qXKHr8FJYxXk5VDOxQXZVXqu';
 
 // Mock users database (in-memory)
 // Password for all users: password123
@@ -17,7 +16,7 @@ export const MOCK_USERS: User[] = [
   {
     id: '1',
     email: 'admin@finarif.com',
-    password: hashPassword('password123'),
+    password: HASHED_PASSWORD,
     name: 'Admin User',
     role: 'admin',
     status: 'active',
@@ -27,7 +26,7 @@ export const MOCK_USERS: User[] = [
   {
     id: '2',
     email: 'finance@finarif.com',
-    password: hashPassword('password123'),
+    password: HASHED_PASSWORD,
     name: 'Finance Manager',
     role: 'finance_manager',
     status: 'active',
@@ -37,7 +36,7 @@ export const MOCK_USERS: User[] = [
   {
     id: '3',
     email: 'risk@finarif.com',
-    password: hashPassword('password123'),
+    password: HASHED_PASSWORD,
     name: 'Risk Analyst',
     role: 'risk_analyst',
     status: 'active',
@@ -47,7 +46,7 @@ export const MOCK_USERS: User[] = [
   {
     id: '4',
     email: 'accountant@finarif.com',
-    password: hashPassword('password123'),
+    password: HASHED_PASSWORD,
     name: 'Senior Accountant',
     role: 'accountant',
     status: 'active',
@@ -57,7 +56,7 @@ export const MOCK_USERS: User[] = [
   {
     id: '5',
     email: 'viewer@finarif.com',
-    password: hashPassword('password123'),
+    password: HASHED_PASSWORD,
     name: 'Board Member',
     role: 'viewer',
     status: 'active',
