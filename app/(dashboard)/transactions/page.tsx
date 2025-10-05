@@ -88,8 +88,8 @@ function sortTransactions(
   if (!direction) return transactions;
 
   const sorted = [...transactions].sort((a, b) => {
-    let aValue: string | number | Date = a[column];
-    let bValue: string | number | Date = b[column];
+    const aValue: string | number | Date = a[column];
+    const bValue: string | number | Date = b[column];
 
     // Handle dates
     if (aValue instanceof Date && bValue instanceof Date) {
