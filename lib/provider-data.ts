@@ -5,7 +5,7 @@
  * Uses Visit Number as primary key (Kenya market)
  */
 
-import type { Provider, Claim, Cents } from './types';
+import type { Provider, Claim } from './types';
 import { kesToCents } from './constants';
 
 /**
