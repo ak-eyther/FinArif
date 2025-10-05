@@ -18,15 +18,7 @@ import {
 } from 'recharts';
 import { formatPercentage, formatCentsIndian } from '@/lib/utils/format';
 import type { Cents } from '@/lib/types';
-
-/**
- * WACC trend data point
- */
-export interface WACCTrendDataPoint {
-  period: string;
-  wacc: number; // Decimal (e.g., 0.085 for 8.5%)
-  totalCapital: number; // Amount in cents
-}
+import type { WACCTrendDataPoint } from '@/lib/utils/trend-data';
 
 /**
  * Component props

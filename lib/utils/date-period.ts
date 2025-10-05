@@ -243,15 +243,19 @@ export function getPeriodDates(
       };
 
     case '60-day':
+      // Use 59 days offset to get exactly 60 inclusive days
+      // Example: Jan 1 (start) + 59 days = Mar 1 (end) = 60 days inclusive
       return {
         startDate: referenceDate,
-        endDate: addDays(referenceDate, 60),
+        endDate: addDays(referenceDate, 59),
       };
 
     case '90-day':
+      // Use 89 days offset to get exactly 90 inclusive days
+      // Example: Jan 1 (start) + 89 days = Mar 31 (end) = 90 days inclusive
       return {
         startDate: referenceDate,
-        endDate: addDays(referenceDate, 90),
+        endDate: addDays(referenceDate, 89),
       };
 
     case 'custom':

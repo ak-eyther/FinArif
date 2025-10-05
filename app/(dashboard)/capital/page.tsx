@@ -23,10 +23,10 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { AddCapitalSourceDialog } from '@/components/capital/AddCapitalSourceDialog';
 import { PeriodSelector } from '@/components/capital/PeriodSelector';
 import { WACCTrendChart } from '@/components/capital/WACCTrendChart';
-import type { WACCTrendDataPoint } from '@/components/capital/WACCTrendChart';
 import { getCapitalHistory, initializeCapitalHistory, getActiveCapitalSources } from '@/lib/data/capital-history-store';
-import { calculateWACCAtDate, calculatePeriodWACC, getWACCTrendData } from '@/lib/calculations/wacc';
-import { getPeriodDates, subtractDays } from '@/lib/utils/date-period';
+import { calculateWACCAtDate, calculatePeriodWACC } from '@/lib/calculations/wacc';
+import { getPeriodDates } from '@/lib/utils/date-period';
+import { generateWACCTrendData } from '@/lib/utils/trend-data';
 
 /**
  * Extended capital source with calculated utilization
@@ -149,8 +149,8 @@ export default function CapitalPage(): React.ReactElement {
   // State for dialog
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  // State for forcing re-render when capital sources change
-  const [refreshKey, setRefreshKey] = useState(0);
+  // State for capital sources
+  const [capitalSources, setCapitalSources] = useState<CapitalSourceWithUtilization[]>([]);
 
   // State for period selection
   const [selectedPeriod, setSelectedPeriod] = useState<{
@@ -161,13 +161,17 @@ export default function CapitalPage(): React.ReactElement {
     dateRange: getPeriodDates('monthly', new Date()),
   });
 
+  // Recalculate capital sources
+  const refreshCapitalSources = () => {
+    setCapitalSources(calculateCapitalUtilization());
+  };
+
   // Initialize capital history on mount
   useEffect(() => {
     initializeCapitalHistory();
-    setRefreshKey((prev) => prev + 1);
+    refreshCapitalSources();
   }, []);
 
-  const capitalSources = calculateCapitalUtilization();
   const chartData = prepareChartData(capitalSources);
 
   // Calculate total metrics
@@ -199,94 +203,20 @@ export default function CapitalPage(): React.ReactElement {
   );
 
   // Generate trend data based on period type
-  const generateTrendData = (): WACCTrendDataPoint[] => {
-    const now = new Date();
-    let periods: DateRange[] = [];
-
-    switch (selectedPeriod.periodType) {
-      case 'monthly': {
-        // Show last 12 months
-        const currentYear = now.getFullYear();
-        const currentMonth = now.getMonth();
-
-        for (let i = 11; i >= 0; i--) {
-          const date = new Date(currentYear, currentMonth - i, 1);
-          const monthPeriod = getPeriodDates('monthly', date);
-          periods.push(monthPeriod);
-        }
-        break;
-      }
-
-      case 'quarterly': {
-        // Show last 4 quarters
-        const currentYear = now.getFullYear();
-        const currentMonth = now.getMonth();
-        const currentQuarter = Math.floor(currentMonth / 3);
-
-        for (let i = 3; i >= 0; i--) {
-          const quarterOffset = currentQuarter - i;
-          const year = currentYear + Math.floor(quarterOffset / 4);
-          const quarter = ((quarterOffset % 4) + 4) % 4;
-          const date = new Date(year, quarter * 3, 1);
-          const quarterPeriod = getPeriodDates('quarterly', date);
-          periods.push(quarterPeriod);
-        }
-        break;
-      }
-
-      case 'yearly': {
-        // Show last 3 years
-        const currentYear = now.getFullYear();
-
-        for (let i = 2; i >= 0; i--) {
-          const date = new Date(currentYear - i, 0, 1);
-          const yearPeriod = getPeriodDates('yearly', date);
-          periods.push(yearPeriod);
-        }
-        break;
-      }
-
-      case '60-day':
-      case '90-day': {
-        // Show last 6 rolling periods
-        const days = selectedPeriod.periodType === '60-day' ? 60 : 90;
-
-        for (let i = 5; i >= 0; i--) {
-          const startDate = subtractDays(now, days * (i + 1));
-          const period = getPeriodDates(selectedPeriod.periodType, startDate);
-          periods.push(period);
-        }
-        break;
-      }
-
-      case 'custom': {
-        // Show just the selected period
-        periods = [selectedPeriod.dateRange];
-        break;
-      }
-    }
-
-    // Generate trend data from periods
-    const trendData = getWACCTrendData(periods, capitalHistory);
-
-    // Convert to WACCTrendDataPoint format
-    return trendData.map((point) => ({
-      period: point.period,
-      wacc: point.wacc,
-      totalCapital: point.totalCapital,
-    }));
-  };
-
-  const trendData = generateTrendData();
+  const trendData = generateWACCTrendData(
+    selectedPeriod.periodType,
+    selectedPeriod.dateRange,
+    capitalHistory
+  );
 
   // Handler for successful capital source addition
   const handleCapitalSourceAdded = () => {
-    // Force re-render to pick up the new source from history
-    setRefreshKey((prev) => prev + 1);
+    // Refresh capital sources to pick up the new source from history
+    refreshCapitalSources();
   };
 
   return (
-    <div className="flex flex-col gap-6" key={refreshKey}>
+    <div className="flex flex-col gap-6">
       {/* Page Header */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">

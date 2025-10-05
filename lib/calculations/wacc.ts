@@ -70,16 +70,25 @@ export function getCapitalSourcesAtDate(
     return [];
   }
 
+  // Sort chronologically: by effectiveDate ascending, then by id (timestamp-based) ascending
+  // This ensures that later updates on the same day are processed last
+  const sortedHistory = [...relevantHistory].sort((a, b) => {
+    const dateDiff = a.effectiveDate.getTime() - b.effectiveDate.getTime();
+    if (dateDiff !== 0) return dateDiff;
+
+    // For same-day entries, sort by id (which contains timestamp)
+    // This preserves insertion order for entries with the same effectiveDate
+    return a.id.localeCompare(b.id);
+  });
+
   // Group by sourceId and get the most recent entry for each source
+  // Later entries in the sorted array will overwrite earlier ones
   const sourceMap = new Map<string, CapitalSourceHistory>();
 
-  for (const entry of relevantHistory) {
-    const existing = sourceMap.get(entry.sourceId);
-
-    // Keep the entry with the latest effective date
-    if (!existing || entry.effectiveDate > existing.effectiveDate) {
-      sourceMap.set(entry.sourceId, entry);
-    }
+  for (const entry of sortedHistory) {
+    // Unconditionally set the entry - later (sorted) entries overwrite earlier ones
+    // This preserves same-day updates
+    sourceMap.set(entry.sourceId, entry);
   }
 
   // Convert to CapitalSource array, excluding REMOVED sources
@@ -398,13 +407,13 @@ export function getWACCTrendData(
       periodType = 'yearly';
     }
 
-    // Check if it's a 60-day period (61 inclusive)
-    if (inclusiveDays === 61) {
+    // Check if it's a 60-day period (60 inclusive)
+    if (inclusiveDays === 60) {
       periodType = '60-day';
     }
 
-    // Check if it's a 90-day period (91 inclusive)
-    if (inclusiveDays === 91) {
+    // Check if it's a 90-day period (90 inclusive)
+    if (inclusiveDays === 90) {
       periodType = '90-day';
     }
 

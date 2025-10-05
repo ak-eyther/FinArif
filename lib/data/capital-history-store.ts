@@ -63,34 +63,38 @@ function validateEffectiveDate(effectiveDate: Date): void {
  */
 function getCurrentSourceState(sourceId: string, asOfDate: Date = new Date()): CapitalSource | null {
   // Get all history for this source up to the given date
-  const allHistory = capitalHistoryStore
-    .filter(h => h.sourceId === sourceId && h.effectiveDate <= asOfDate)
-    .sort((a, b) => {
-      // Sort by date descending (most recent first)
-      const timeDiff = b.effectiveDate.getTime() - a.effectiveDate.getTime();
-      if (timeDiff !== 0) return timeDiff;
-
-      // If same timestamp, REMOVED actions should come first (highest priority)
-      if (a.action === 'REMOVED' && b.action !== 'REMOVED') return -1;
-      if (b.action === 'REMOVED' && a.action !== 'REMOVED') return 1;
-
-      // Otherwise maintain original order
-      return 0;
-    });
+  const filteredHistory = capitalHistoryStore.filter(
+    h => h.sourceId === sourceId && h.effectiveDate <= asOfDate
+  );
 
   // If no history found, source doesn't exist
-  if (allHistory.length === 0) {
+  if (filteredHistory.length === 0) {
     return null;
   }
+
+  // Sort chronologically ascending (oldest first) by effectiveDate, then by id
+  // This ensures later entries overwrite earlier ones when we pick the last one
+  const sortedHistory = [...filteredHistory].sort((a, b) => {
+    // Sort by effectiveDate ascending (oldest first)
+    const timeDiff = a.effectiveDate.getTime() - b.effectiveDate.getTime();
+    if (timeDiff !== 0) return timeDiff;
+
+    // For same-day entries, use id as tie-breaker (ascending)
+    // IDs contain timestamps (format: hist_${Date.now()}_${counter})
+    // Later entries have lexicographically larger IDs
+    return a.id.localeCompare(b.id);
+  });
+
+  // Pick the LAST entry (most recent) from the sorted array
+  const latest = sortedHistory[sortedHistory.length - 1];
 
   // Check if the most recent action was REMOVED
-  if (allHistory[0].action === 'REMOVED') {
+  // REMOVED takes precedence - if the latest action is REMOVED, source is gone
+  if (latest.action === 'REMOVED') {
     return null;
   }
 
-  const latest = allHistory[0];
-
-  // Reconstruct the current state
+  // Reconstruct the current state from the latest non-REMOVED entry
   // Note: usedCents and remainingCents would be calculated from actual transaction data
   // For now, we use availableCents as the full available amount
   return {

@@ -6,13 +6,14 @@ The `PeriodSelector` component is a comprehensive period selection UI for the Ti
 
 ## File Location
 
-```
+```text
 /Users/arifkhan/Desktop/FinArif/finarif-dashboard/components/capital/PeriodSelector.tsx
 ```
 
 ## Features Implemented
 
 ### 1. Period Type Selection
+
 - **Dropdown/Select** for choosing period type
 - **Supported types:**
   - Monthly
@@ -25,22 +26,28 @@ The `PeriodSelector` component is a comprehensive period selection UI for the Ti
 - Uses shadcn/ui `Select` component with proper styling
 
 ### 2. Quick Date Presets
+
 Contextual preset buttons that appear based on selected period type:
 
 **Monthly:**
+
 - This Month
 - Last Month
 
 **Quarterly:**
+
 - This Quarter
 - Last Quarter
 
 **Yearly:**
+
 - This Year
 - Last Year
 
 ### 3. Custom Date Range
+
 When "Custom" period type is selected:
+
 - **Two date pickers:** Start Date and End Date
 - **Calendar with Popover** UI for easy date selection
 - **Validation:** End date must be after start date
@@ -49,13 +56,16 @@ When "Custom" period type is selected:
 - **Formatted display** using date-fns
 
 ### 4. Reference Date Selector (60-Day/90-Day)
+
 For fixed-duration periods:
+
 - **Single date picker** for start date
 - **Auto-calculates** end date based on period type (60 or 90 days)
 - **Helper text** shows "60/90 days from [date] to [date]"
 - Uses `addDays` utility from date-period utilities
 
 ### 5. onChange Callback
+
 - **Emits both** `PeriodType` and `DateRange` when selection changes
 - **Automatic date calculation** from period type and user selection
 - **Type-safe** interface with full TypeScript support
@@ -100,6 +110,7 @@ function MyComponent() {
 ## Date Calculation Logic
 
 ### Standard Periods (Monthly, Quarterly, Yearly)
+
 1. Uses `getPeriodDates()` utility with current date
 2. Automatically calculates start and end based on period type:
    - **Monthly:** First day to last day of month
@@ -107,36 +118,43 @@ function MyComponent() {
    - **Yearly:** January 1 to December 31
 
 ### Fixed-Duration Periods (60-Day, 90-Day)
+
 1. User selects a reference/start date
 2. End date calculated using `addDays(referenceDate, 60 or 90)`
 3. Both dates emitted via onChange callback
 
 ### Custom Period
+
 1. User selects both start and end dates independently
 2. Validation ensures end date > start date
 3. End date picker disables all dates before selected start date
 
 ### Quick Presets
+
 Each preset calculates the appropriate date range:
+
 - **This Month/Quarter/Year:** Uses current date with period utilities
 - **Last Month/Quarter/Year:** Subtracts appropriate time unit from current date
 - **Example for "Last Month":**
-  ```typescript
-  const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const range = {
-    startDate: getStartOfMonth(lastMonth),
-    endDate: getEndOfMonth(lastMonth),
-  };
-  ```
+
+```typescript
+const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+const range = {
+  startDate: getStartOfMonth(lastMonth),
+  endDate: getEndOfMonth(lastMonth),
+};
+```
 
 ## Layout & Responsiveness
 
 ### Desktop (sm and above)
+
 - **Horizontal layout:** Period Type dropdown on left, presets/pickers on right
 - **Aligned items** for consistent visual hierarchy
 - **Grouped sections** with proper spacing
 
 ### Mobile (below sm)
+
 - **Vertical stacking** for all elements
 - **Full-width** controls for easier touch interaction
 - **Maintained visual grouping** with consistent spacing
@@ -152,10 +170,12 @@ Each preset calculates the appropriate date range:
 ## Utilities Imported
 
 ### From `@/lib/types`
+
 - `PeriodType`
 - `DateRange`
 
 ### From `@/lib/utils/date-period`
+
 - `getPeriodDates` - Main period calculation function
 - `getStartOfMonth`, `getEndOfMonth` - Month boundaries
 - `getStartOfQuarter`, `getEndOfQuarter` - Quarter boundaries
@@ -164,16 +184,19 @@ Each preset calculates the appropriate date range:
 - `subtractDays` - (imported but available if needed)
 
 ### From `date-fns`
+
 - `format` - Date formatting for display
 
 ## State Management
 
 ### Internal State
+
 - `customStartDate` - Tracks start date for custom period
 - `customEndDate` - Tracks end date for custom period
 - `referenceDate` - Tracks start date for 60/90-day periods
 
 ### State Synchronization
+
 - State updates trigger `onChange` callback with new selection
 - Parent component controls the actual value via props
 - Component handles intermediate UI state internally
@@ -210,6 +233,7 @@ Each preset calculates the appropriate date range:
 ## Future Enhancements
 
 Potential improvements for future iterations:
+
 - Add "Compare to previous period" toggle
 - Support for fiscal year vs calendar year
 - Keyboard shortcuts for common presets
@@ -263,15 +287,15 @@ When testing this component:
 
 No issues encountered during implementation. All requirements were successfully implemented:
 
-✅ Period type selection with 6 options
-✅ Quick date presets for Monthly/Quarterly/Yearly
-✅ Custom date range with validation
-✅ Reference date selector for 60/90-day periods
-✅ onChange callback with proper typing
-✅ Responsive layout (horizontal → vertical)
-✅ All shadcn/ui components properly integrated
-✅ Date utilities correctly imported and used
-✅ Clear visual grouping and spacing
+- ✅ Period type selection with 6 options
+- ✅ Quick date presets for Monthly/Quarterly/Yearly
+- ✅ Custom date range with validation
+- ✅ Reference date selector for 60/90-day periods
+- ✅ onChange callback with proper typing
+- ✅ Responsive layout (horizontal → vertical)
+- ✅ All shadcn/ui components properly integrated
+- ✅ Date utilities correctly imported and used
+- ✅ Clear visual grouping and spacing
 
 ## Related Files
 
