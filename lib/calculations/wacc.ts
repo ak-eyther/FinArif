@@ -28,7 +28,6 @@ import type {
 } from '@/lib/types';
 
 import {
-  getPeriodDates,
   formatPeriodLabel,
   getDaysBetween,
 } from '@/lib/utils/date-period';
@@ -316,13 +315,10 @@ export function calculateAverageWACCForPeriod(
  * // }
  */
 export function calculatePeriodWACC(
-  periodType: PeriodType,
-  referenceDate: Date,
+  startDate: Date,
+  endDate: Date,
   history: CapitalSourceHistory[]
 ): { start: number; end: number; average: number } {
-  // Get period dates using utility function
-  const { startDate, endDate } = getPeriodDates(periodType, referenceDate);
-
   // Calculate WACC at start of period
   const startSnapshot = calculateWACCAtDate(startDate, history);
 

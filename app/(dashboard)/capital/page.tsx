@@ -193,8 +193,8 @@ export default function CapitalPage(): React.ReactElement {
 
   // Calculate period WACC metrics
   const periodWACC = calculatePeriodWACC(
-    selectedPeriod.periodType,
     selectedPeriod.dateRange.startDate,
+    selectedPeriod.dateRange.endDate,
     capitalHistory
   );
 
