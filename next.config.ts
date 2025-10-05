@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Empty config - use Next.js defaults
+  // Vercel-specific configuration
+  reactStrictMode: true,
+  swcMinify: true,
 };
 
 export default nextConfig;

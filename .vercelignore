@@ -1,2 +1,4 @@
 .next/cache
+.next/trace
 node_modules
+*.log
