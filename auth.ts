@@ -69,5 +69,6 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
     strategy: 'jwt',
     maxAge: 30 * 60, // 30 minutes
   },
-  secret: process.env.AUTH_SECRET || 'finarif-secret-key-change-in-production',
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || 'finarif-secret-key-change-in-production',
+  trustHost: true, // Required for Vercel deployments
 });
