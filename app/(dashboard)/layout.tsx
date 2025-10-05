@@ -25,7 +25,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     label: 'Dashboard',
-    href: '/dashboard',
+    href: '/',
     icon: LayoutDashboard,
   },
   {
@@ -56,7 +56,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <aside className="w-64 border-r border-slate-200 bg-white">
         {/* Brand Header */}
         <div className="flex h-16 items-center px-6">
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
               <span className="text-lg font-bold text-white">F</span>
             </div>
