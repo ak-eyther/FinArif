@@ -374,10 +374,13 @@ export function getWACCTrendData(
     // Determine period type based on date range characteristics
     let periodType: PeriodType = 'custom';
 
+    // getDaysBetween returns exclusive count (difference), but we need inclusive
+    // For Feb 1 to Feb 28: getDaysBetween = 27, but inclusive count = 28 days
     const daysDiff = getDaysBetween(periodRange.startDate, periodRange.endDate);
+    const inclusiveDays = daysDiff + 1;
 
-    // Check if it's a monthly period (28-31 days)
-    if (daysDiff >= 28 && daysDiff <= 31) {
+    // Check if it's a monthly period (28-31 days inclusive)
+    if (inclusiveDays >= 28 && inclusiveDays <= 31) {
       const isStartOfMonth = periodRange.startDate.getDate() === 1;
       const isEndOfMonth = periodRange.endDate.getDate() >= 28;
       if (isStartOfMonth && isEndOfMonth) {
@@ -385,23 +388,23 @@ export function getWACCTrendData(
       }
     }
 
-    // Check if it's a quarterly period (89-92 days)
-    if (daysDiff >= 89 && daysDiff <= 92) {
+    // Check if it's a quarterly period (90-92 days inclusive)
+    if (inclusiveDays >= 90 && inclusiveDays <= 92) {
       periodType = 'quarterly';
     }
 
-    // Check if it's a yearly period (365-366 days)
-    if (daysDiff >= 365 && daysDiff <= 366) {
+    // Check if it's a yearly period (365-366 days inclusive)
+    if (inclusiveDays >= 365 && inclusiveDays <= 366) {
       periodType = 'yearly';
     }
 
-    // Check if it's a 60-day period
-    if (daysDiff === 60) {
+    // Check if it's a 60-day period (61 inclusive)
+    if (inclusiveDays === 61) {
       periodType = '60-day';
     }
 
-    // Check if it's a 90-day period
-    if (daysDiff === 90) {
+    // Check if it's a 90-day period (91 inclusive)
+    if (inclusiveDays === 91) {
       periodType = '90-day';
     }
 
