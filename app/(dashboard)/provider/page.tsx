@@ -6,7 +6,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { getProviders, getClaimsByProviderId } from '@/lib/provider-data';
 import { calculateProviderStats, calculateUnpaidClaimsAging } from '@/lib/calculations/provider-stats';
 import { formatCents } from '@/lib/utils/format';

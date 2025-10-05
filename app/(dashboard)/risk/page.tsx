@@ -9,13 +9,13 @@
 
 'use client';
 
+import React, { useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { getActiveTransactions } from '@/lib/mock-data';
 import { formatCentsCompact, formatPercentage } from '@/lib/utils/format';
 import type { Transaction, RiskLevel, Cents } from '@/lib/types';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
-import { useMemo } from 'react';
 import { centsToKes } from '@/lib/constants';
 
 /**
