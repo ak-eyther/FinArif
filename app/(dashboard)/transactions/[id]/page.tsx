@@ -20,9 +20,9 @@ import type { RiskLevel } from '@/lib/types';
  * Page props with dynamic route params
  */
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 /**
@@ -60,9 +60,12 @@ function getRiskBadgeVariant(level: RiskLevel): 'default' | 'secondary' | 'destr
 /**
  * Transaction Detail Page Component
  */
-export default function TransactionDetailPage({ params }: PageProps): React.ReactElement {
+export default async function TransactionDetailPage({ params }: PageProps): Promise<React.ReactElement> {
+  // Await params in Next.js 15
+  const { id } = await params;
+  
   // Get transaction by ID
-  const transaction = getTransactionById(params.id);
+  const transaction = getTransactionById(id);
 
   // Handle not found case
   if (!transaction) {

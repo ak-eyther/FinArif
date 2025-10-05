@@ -5,14 +5,12 @@
  * Mix of statuses, risk levels, and amounts
  */
 
-import type { Transaction, Cents } from './types';
+import type { Transaction } from './types';
 import { PROVIDERS, INSURERS, CAPITAL_SOURCES, kesToCents } from './constants';
 import {
   calculateProviderRisk,
   calculateInsuranceRisk,
-  calculateTransactionRisk,
-  getRiskLevel,
-  getFeeRate
+  calculateTransactionRisk
 } from './calculations/risk';
 
 /**
