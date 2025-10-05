@@ -66,7 +66,7 @@ function getRiskColor(level: RiskLevel): string {
 /**
  * Custom tooltip for scatter chart
  */
-function CustomTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: RiskDataPoint }> }): JSX.Element | null {
+function CustomTooltip({ active, payload }: { active?: boolean; payload?: Array<{ payload: RiskDataPoint }> }): React.ReactElement | null {
   if (!active || !payload || payload.length === 0) {
     return null;
   }
@@ -182,7 +182,7 @@ function calculateInsurerConcentration(transactions: Transaction[]): Concentrati
 /**
  * Risk Analysis Dashboard Page Component
  */
-export default function RiskPage(): JSX.Element {
+export default function RiskPage(): React.ReactElement {
   const transactions = getActiveTransactions();
 
   // Prepare heat map data

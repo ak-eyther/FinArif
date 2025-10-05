@@ -104,7 +104,7 @@ function prepareChartData(sources: CapitalSourceWithUtilization[]): ChartDataPoi
 function CustomTooltip({ active, payload }: {
   active?: boolean;
   payload?: Array<{ value: number; payload: ChartDataPoint }>;
-}): JSX.Element | null {
+}): React.ReactElement | null {
   if (!active || !payload || payload.length === 0) {
     return null;
   }
@@ -133,7 +133,7 @@ function CustomTooltip({ active, payload }: {
 /**
  * Capital Management Page Component
  */
-export default function CapitalPage(): JSX.Element {
+export default function CapitalPage(): React.ReactElement {
   const capitalSources = calculateCapitalUtilization();
   const chartData = prepareChartData(capitalSources);
 

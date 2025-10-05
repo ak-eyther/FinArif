@@ -147,3 +147,93 @@ export interface FeeTier {
   fee: number; // Fee rate as decimal
   level: RiskLevel;
 }
+
+/**
+ * Claim type for Kenyan healthcare market
+ */
+export type ClaimType = 'OPD' | 'IPD';
+
+/**
+ * Claim status
+ */
+export type ClaimStatus = 'paid' | 'unpaid' | 'pending' | 'rejected';
+
+/**
+ * Individual claim record with Visit Number (Kenya market)
+ */
+export interface Claim {
+  /** Visit Number - Primary key in Kenya market */
+  visitNumber: string;
+
+  /** Claim type */
+  claimType: ClaimType;
+
+  /** Provider ID */
+  providerId: string;
+
+  /** Financial details */
+  claimAmountCents: Cents;
+
+  /** Dates */
+  serviceDate: Date; // Date service was provided
+  submissionDate: Date; // Date claim was submitted
+  paymentDate: Date | null; // Date claim was paid (if paid)
+
+  /** Status */
+  status: ClaimStatus;
+
+  /** AI validation flags */
+  aiValidationPassed: boolean;
+  aiFraudFlagged: boolean;
+  fraudReason?: string;
+
+  /** Rejection info (if rejected after AI validation) */
+  rejectedAfterAI: boolean;
+  rejectionReason?: string;
+
+  /** Insurer information */
+  insuranceName: string;
+}
+
+/**
+ * Provider information
+ */
+export interface Provider {
+  id: string;
+  name: string;
+  discountPercentage: number; // 0-100 (percentage discount for both OPD and IPD)
+  riskScore?: number; // Auto-calculated, not visible in MVP
+}
+
+/**
+ * Provider dashboard statistics
+ */
+export interface ProviderStats {
+  /** OPD Claims */
+  totalOPDClaims: number;
+  paidOPDClaims: number;
+  unpaidOPDClaims: number;
+  opdClaimAmountCents: Cents;
+
+  /** IPD Claims */
+  totalIPDClaims: number;
+  paidIPDClaims: number;
+  unpaidIPDClaims: number;
+  ipdClaimAmountCents: Cents;
+
+  /** Unpaid Claims */
+  totalUnpaidClaims: number;
+  totalUnpaidAmountCents: Cents;
+
+  /** Rejected Claims (after AI validation) */
+  rejectedAfterAIClaims: number;
+  rejectedReasons: { reason: string; count: number }[];
+
+  /** AI Fraud Flags */
+  aiFraudFlaggedClaims: number;
+  fraudReasons: { reason: string; count: number }[];
+
+  /** Claim Submission Speed */
+  avgSubmissionDays: number; // Average days from service to submission
+  submissionTrend: TrendDirection;
+}

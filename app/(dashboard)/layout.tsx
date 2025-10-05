@@ -8,7 +8,7 @@
  */
 
 import Link from 'next/link';
-import { LayoutDashboard, ArrowLeftRight, TrendingUp, Wallet } from 'lucide-react';
+import { LayoutDashboard, ArrowLeftRight, TrendingUp, Wallet, Building2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 
@@ -42,6 +42,11 @@ const navItems: NavItem[] = [
     label: 'Capital Management',
     href: '/capital',
     icon: Wallet,
+  },
+  {
+    label: 'Provider Dashboard',
+    href: '/provider',
+    icon: Building2,
   },
 ];
 
