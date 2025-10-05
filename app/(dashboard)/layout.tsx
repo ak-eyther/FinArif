@@ -5,12 +5,16 @@
  * - Sidebar navigation to key sections
  * - Header with FinArif branding
  * - Professional healthcare fintech styling
+ * - User authentication and role display
  */
 
 import Link from 'next/link';
 import { LayoutDashboard, ArrowLeftRight, TrendingUp, Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
+import { auth } from '@/auth';
+import { UserMenu } from '@/components/auth/user-menu';
+import { ROLE_LABELS } from '@/lib/types/auth';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -49,7 +53,16 @@ const navItems: NavItem[] = [
  * Dashboard layout component
  * Wraps all dashboard pages with consistent navigation and branding
  */
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+export default async function DashboardLayout({ children }: DashboardLayoutProps) {
+  const session = await auth();
+
+  if (!session?.user) {
+    return null;
+  }
+
+  const userRole = session.user.role as keyof typeof ROLE_LABELS;
+  const roleLabel = ROLE_LABELS[userRole] || 'User';
+
   return (
     <div className="flex min-h-screen bg-slate-50">
       {/* Sidebar Navigation */}
@@ -108,12 +121,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               </p>
             </div>
 
-            {/* User info placeholder - can be enhanced later */}
-            <div className="flex items-center gap-2">
+            {/* User Menu */}
+            <div className="flex items-center gap-4">
               <div className="text-right">
-                <p className="text-sm font-medium text-slate-900">Board View</p>
-                <p className="text-xs text-slate-600">Executive Dashboard</p>
+                <p className="text-sm font-medium text-slate-900">{session.user.name}</p>
+                <p className="text-xs text-slate-600">{roleLabel}</p>
               </div>
+              <UserMenu user={session.user} />
             </div>
           </div>
         </header>

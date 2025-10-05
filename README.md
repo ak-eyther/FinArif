@@ -36,7 +36,15 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
+Open [http://localhost:3000](http://localhost:3000) - you'll be redirected to login.
+
+**Login with demo credentials:**
+```
+Email: admin@finarif.com
+Password: password123
+```
+
+See [QUICK_START.md](QUICK_START.md) for more details.
 
 ---
 
@@ -54,9 +62,10 @@ Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
 
 - **Framework:** Next.js 15 (App Router)
 - **Language:** TypeScript 5.7 (Strict)
+- **Authentication:** NextAuth.js v5 (Email/Password)
 - **UI:** shadcn/ui + TailwindCSS
 - **Charts:** Recharts
-- **Deployment:** Vercel
+- **Deployment:** Vercel (Multi-environment)
 
 ---
 
@@ -77,12 +86,17 @@ finarif-dashboard/
 
 ---
 
-## Git Branches
+## Git Branches & Deployment
 
-- **`develop`** - Active development (current)
-- **`qa`** - Quality assurance testing
-- **`uat`** - User acceptance testing
-- **`prod`** - Production ready
+| Branch | Environment | URL |
+|--------|-------------|-----|
+| **`prod`** | Production | `https://finarif-dashboard.vercel.app` |
+| **`uat`** | UAT | `https://finarif-dashboard-uat.vercel.app` |
+| **`qa`** | QA Testing | `https://finarif-dashboard-qa.vercel.app` |
+| **`develop`** | Development | `https://finarif-dashboard-dev.vercel.app` |
+| **`feature/*`** | Preview | `https://finarif-dashboard-git-{branch}.vercel.app` |
+
+**Current:** `feature/auth-system`
 
 See `.github/BRANCHING_STRATEGY.md` for workflow details.
 
@@ -90,6 +104,13 @@ See `.github/BRANCHING_STRATEGY.md` for workflow details.
 
 ## Documentation
 
+**Authentication:**
+- **`QUICK_START.md`** - ⚡ 30-second setup guide
+- **`AUTH_SETUP.md`** - Complete authentication guide
+- **`DEPENDENCY_CHECK.md`** - Dependency verification
+- **`IMPLEMENTATION_SUMMARY.md`** - Feature breakdown
+
+**Project:**
 - **`PROJECT_STATUS.md`** - Complete project status
 - **`.claude/project-brief.md`** - Business overview
 - **`.claude/coding-rules.md`** - TypeScript standards
@@ -99,11 +120,19 @@ See `.github/BRANCHING_STRATEGY.md` for workflow details.
 
 ## Key Features
 
+**Financial:**
 ✅ Risk-based pricing (3-5% fees)
 ✅ NIM calculation with cost of funds
 ✅ Complete P&L with provisions
 ✅ 18 realistic transactions
 ✅ Professional board-ready UI
+
+**Authentication & Security:**
+✅ Email/password authentication
+✅ 5 user roles (Admin, Finance, Risk, Accountant, Viewer)
+✅ Role-based access control (RBAC)
+✅ Secure sessions (JWT, 30-min expiry)
+✅ Route protection middleware
 ✅ TypeScript strict mode (zero errors)
 
 ---
