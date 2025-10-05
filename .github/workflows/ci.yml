@@ -63,16 +63,16 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/prod" ]]; then
             echo "environment=production" >> $GITHUB_OUTPUT
-            echo "url=https://finarif.vercel.app" >> $GITHUB_OUTPUT
+            echo "url=https://finarif-dashboard.vercel.app" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref }}" == "refs/heads/uat" ]]; then
             echo "environment=uat" >> $GITHUB_OUTPUT
-            echo "url=https://finarif-uat.vercel.app" >> $GITHUB_OUTPUT
+            echo "url=https://finarif-dashboard-git-uat.vercel.app" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref }}" == "refs/heads/qa" ]]; then
             echo "environment=qa" >> $GITHUB_OUTPUT
-            echo "url=https://finarif-qa.vercel.app" >> $GITHUB_OUTPUT
+            echo "url=https://finarif-dashboard-git-qa.vercel.app" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
             echo "environment=development" >> $GITHUB_OUTPUT
-            echo "url=https://finarif-dev.vercel.app" >> $GITHUB_OUTPUT
+            echo "url=https://finarif-dashboard-git-develop.vercel.app" >> $GITHUB_OUTPUT
           fi
 
       - name: Deployment Ready

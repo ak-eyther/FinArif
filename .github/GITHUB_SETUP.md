@@ -264,10 +264,10 @@ Now that branches are protected, create PRs to promote code:
 ### Vercel Environment URLs
 
 After deployment, you'll get:
-- **Production:** https://finarif.vercel.app (from `prod` branch)
-- **UAT Preview:** https://finarif-git-uat-[username].vercel.app
-- **QA Preview:** https://finarif-git-qa-[username].vercel.app
-- **Dev Preview:** https://finarif-git-develop-[username].vercel.app
+- **Production:** https://finarif-dashboard.vercel.app (from `prod` branch)
+- **UAT Preview:** https://finarif-dashboard-git-uat-[username].vercel.app
+- **QA Preview:** https://finarif-dashboard-git-qa-[username].vercel.app
+- **Dev Preview:** https://finarif-dashboard-git-develop-[username].vercel.app
 
 ---
 

@@ -281,10 +281,10 @@ git push origin v1.0.0
 
 | Environment | Branch | URL | Purpose |
 |-------------|--------|-----|---------|
-| Development | `develop` | https://finarif-dev.vercel.app | Active development |
-| QA | `qa` | https://finarif-qa.vercel.app | Quality assurance testing |
-| UAT | `uat` | https://finarif-uat.vercel.app | User acceptance testing |
-| Production | `prod` | https://finarif.vercel.app | Live production site |
+| Development | `develop` | https://finarif-dashboard-git-develop.vercel.app | Active development |
+| QA | `qa` | https://finarif-dashboard-git-qa.vercel.app | Quality assurance testing |
+| UAT | `uat` | https://finarif-dashboard-git-uat.vercel.app | User acceptance testing |
+| Production | `prod` | https://finarif-dashboard.vercel.app | Live production site |
 
 ---
 

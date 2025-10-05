@@ -39,8 +39,8 @@ Returns deployment URL
 
 **Key Concepts:**
 
-- **Production Deployment:** From your `prod` branch → `finarif.vercel.app`
-- **Preview Deployment:** From any other branch → `finarif-git-branch-xxx.vercel.app`
+- **Production Deployment:** From your `prod` branch → `finarif-dashboard.vercel.app`
+- **Preview Deployment:** From any other branch → `finarif-dashboard-git-branch-xxx.vercel.app`
 - **Build Time:** Happens on Vercel's servers
 - **Runtime:** Edge functions (serverless)
 
@@ -206,7 +206,7 @@ DATABASE_URL=your_database_url
    → Updating DNS
 
 7. ✅ Deployment Complete!             [~2min total]
-   → Production: https://finarif.vercel.app
+   → Production: https://finarif-dashboard.vercel.app
 ```
 
 **First deployment:** ~2-3 minutes
@@ -237,10 +237,10 @@ DATABASE_URL=your_database_url
 ```
 Branch        →    URL
 ────────────────────────────────────────────────────────────
-develop       →    https://finarif-git-develop-ak-eyther.vercel.app
-qa            →    https://finarif-git-qa-ak-eyther.vercel.app
-uat           →    https://finarif-git-uat-ak-eyther.vercel.app
-prod          →    https://finarif.vercel.app (production)
+develop       →    https://finarif-dashboard-git-develop-ak-eyther.vercel.app
+qa            →    https://finarif-dashboard-git-qa-ak-eyther.vercel.app
+uat           →    https://finarif-dashboard-git-uat-ak-eyther.vercel.app
+prod          →    https://finarif-dashboard.vercel.app (production)
 ```
 
 **Why this matters for FinArif:**
@@ -275,7 +275,7 @@ prod          →    https://finarif.vercel.app (production)
 ### 4.1 Why Use a Custom Domain?
 
 **Benefits:**
-- ✅ Professional appearance: `finarif.com` vs `finarif.vercel.app`
+- ✅ Professional appearance: `finarif.com` vs `finarif-dashboard.vercel.app`
 - ✅ Better for board presentations
 - ✅ Branding and credibility
 - ✅ Easier to remember
@@ -361,7 +361,7 @@ When you create a PR from `develop` to `qa`:
 GitHub Pull Request UI:
 
 ✅ Vercel — Deployment ready
-   🔗 View Deployment: https://finarif-git-develop-xxx.vercel.app
+   🔗 View Deployment: https://finarif-dashboard-git-develop-xxx.vercel.app
 
    All checks have passed
    ✅ Build & Quality Checks
@@ -409,18 +409,18 @@ GitHub Pull Request UI:
 ```
 Production                                 Updated 2m ago
 ├── Status:        Ready
-├── URL:           https://finarif.vercel.app
+├── URL:           https://finarif-dashboard.vercel.app
 ├── Build Time:    1m 23s
 ├── Framework:     Next.js 15.5.4
 └── Git:           prod@cd5acf5
 
 Preview Deployments
 ├── develop@cd5acf5                       Updated 5m ago
-│   └── URL: https://finarif-git-develop-xxx.vercel.app
+│   └── URL: https://finarif-dashboard-git-develop-xxx.vercel.app
 ├── qa@527d782                            Updated 1h ago
-│   └── URL: https://finarif-git-qa-xxx.vercel.app
+│   └── URL: https://finarif-dashboard-git-qa-xxx.vercel.app
 └── uat@527d782                           Updated 2h ago
-    └── URL: https://finarif-git-uat-xxx.vercel.app
+    └── URL: https://finarif-dashboard-git-uat-xxx.vercel.app
 ```
 
 ---
@@ -492,7 +492,7 @@ git commit -m "feat(transactions): add CSV export functionality"
 git push origin feature/export-csv
 
 # 5. Vercel auto-deploys preview
-#    → https://finarif-git-feature-export-csv-xxx.vercel.app
+#    → https://finarif-dashboard-git-feature-export-csv-xxx.vercel.app
 
 # 6. Test preview deployment
 #    Click the URL and verify
@@ -502,7 +502,7 @@ git push origin feature/export-csv
 
 # 8. Merge PR
 #    Develop branch auto-deploys
-#    → https://finarif-git-develop-xxx.vercel.app
+#    → https://finarif-dashboard-git-develop-xxx.vercel.app
 ```
 
 ---
@@ -516,7 +516,7 @@ git push origin feature/export-csv
 git checkout qa
 git merge develop
 git push origin qa
-# → Auto-deploys to https://finarif-git-qa-xxx.vercel.app
+# → Auto-deploys to https://finarif-dashboard-git-qa-xxx.vercel.app
 
 # 2. QA team tests
 
@@ -524,7 +524,7 @@ git push origin qa
 git checkout uat
 git merge qa
 git push origin uat
-# → Auto-deploys to https://finarif-git-uat-xxx.vercel.app
+# → Auto-deploys to https://finarif-dashboard-git-uat-xxx.vercel.app
 
 # 4. Board reviews UAT deployment
 
@@ -532,7 +532,7 @@ git push origin uat
 git checkout prod
 git merge uat
 git push origin prod
-# → Auto-deploys to PRODUCTION https://finarif.vercel.app
+# → Auto-deploys to PRODUCTION https://finarif-dashboard.vercel.app
 
 # 6. Tag release
 git tag -a v1.0.0 -m "Release v1.0.0 - Board Demo"
@@ -663,10 +663,10 @@ export default nextConfig
 
 Test these URLs on mobile:
 ```
-https://finarif.vercel.app/
-https://finarif.vercel.app/transactions
-https://finarif.vercel.app/risk
-https://finarif.vercel.app/capital
+https://finarif-dashboard.vercel.app/
+https://finarif-dashboard.vercel.app/transactions
+https://finarif-dashboard.vercel.app/risk
+https://finarif-dashboard.vercel.app/capital
 ```
 
 **Verify:**
@@ -754,7 +754,7 @@ npm run build
 
 ### Post-Deployment
 
-- [ ] Production URL works: `https://finarif.vercel.app`
+- [ ] Production URL works: `https://finarif-dashboard.vercel.app`
 - [ ] All pages load correctly
 - [ ] Charts and data display properly
 - [ ] Tested on mobile/desktop
@@ -788,9 +788,9 @@ After successful deployment:
 
 1. **Share URLs with team:**
    ```
-   Production:  https://finarif.vercel.app
-   UAT:         https://finarif-git-uat-xxx.vercel.app
-   QA:          https://finarif-git-qa-xxx.vercel.app
+   Production:  https://finarif-dashboard.vercel.app
+   UAT:         https://finarif-dashboard-git-uat-xxx.vercel.app
+   QA:          https://finarif-dashboard-git-qa-xxx.vercel.app
    ```
 
 2. **Test board presentation:**

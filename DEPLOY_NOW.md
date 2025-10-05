@@ -2,7 +2,7 @@
 
 ## Quick Deployment - No Custom Domain Needed!
 
-Vercel provides **free** subdomains like `finarif.vercel.app` - perfect for your board demo!
+Vercel provides **free** subdomains like `finarif-dashboard.vercel.app` - perfect for your board demo!
 
 ---
 
@@ -248,7 +248,7 @@ Change it in Project Settings:
 1. Go to **Project Settings** → **General**
 2. Find **"Project Name"**
 3. Change to something shorter:
-   - `finarif` → `finarif.vercel.app`
+   - `finarif` → `finarif-dashboard.vercel.app`
    - `finarif-app` → `finarif-app.vercel.app`
 4. **Save**
 
