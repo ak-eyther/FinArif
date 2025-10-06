@@ -242,7 +242,7 @@ Click **"Merge pull request"** on GitHub.
 
 Print this and keep at your desk:
 
-```
+```text
 ┌─────────────────────────────────────────────────┐
 │   BEFORE EVERY PRODUCTION MERGE                 │
 │                                                 │
