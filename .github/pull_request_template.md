@@ -29,7 +29,7 @@
 
 ## 🔍 Review Requests (⚠️ MANDATORY - DO NOT SKIP)
 
-### @coderabbitai - Comprehensive Automated Review
+### @coderabbitai - Comprehensive Code Review
 <!-- CodeRabbit will auto-review, but you can add specific focus areas -->
 
 Please perform comprehensive review with focus on:
@@ -40,13 +40,6 @@ Please perform comprehensive review with focus on:
 - [ ] TypeScript type safety (strict mode compliance)
 - [ ] No `any` types or unsafe assertions
 - [ ] Error handling and edge cases
-
-**Architecture & Design:**
-- [ ] Architecture decisions and patterns
-- [ ] Code organization and structure
-- [ ] Component composition and reusability
-- [ ] Separation of concerns
-- [ ] Scalability considerations
 
 **Performance & Best Practices:**
 - [ ] Performance optimization opportunities
@@ -61,6 +54,28 @@ Please perform comprehensive review with focus on:
 
 **Specific areas to review:**
 <!-- Add any specific concerns or areas you want CodeRabbit to focus on -->
+
+### @codex - Architecture & Design Review
+<!-- Codex (Anthropic) will auto-review and can be manually triggered -->
+
+Please validate:
+
+**Architecture & Design:**
+- [ ] Architecture decisions and patterns
+- [ ] Code organization and structure
+- [ ] Component composition and reusability
+- [ ] Separation of concerns
+- [ ] Scalability considerations
+- [ ] Design patterns appropriateness
+
+**Code Intelligence:**
+- [ ] Logic flow and correctness
+- [ ] Edge case handling
+- [ ] Code maintainability
+- [ ] Refactoring opportunities
+
+**Specific asks:**
+<!-- Add any specific questions for Codex -->
 
 ### @ak-eyther - Final Approval
 

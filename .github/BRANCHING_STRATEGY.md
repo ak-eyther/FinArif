@@ -158,85 +158,13 @@ graph TD
     hotfix/fix -->|merge| develop
 ```
 
-**When to use Hotfixes:**
-- Critical bugs in production
-- Security vulnerabilities
-- Data corruption issues
-- UI/UX issues affecting user experience
-- Minor formatting/display fixes that don't require full QA cycle
-
 **Steps:**
-1. **Create hotfix branch from `prod`**
-   ```bash
-   git checkout prod
-   git pull origin prod
-   git checkout -b hotfix/indian-currency-format
-   ```
-
-2. **Make changes and test locally**
-   ```bash
-   # Fix the issue
-   npm run build  # Verify build works
-   npm run lint   # Check for linting errors
-   ```
-
-3. **Commit changes**
-   ```bash
-   git add -A
-   git commit -m "hotfix: add Indian currency formatting (Lakhs/Crores)"
-   ```
-
-4. **Merge to `prod` first** (highest priority)
-   ```bash
-   git checkout prod
-   git merge hotfix/indian-currency-format --no-edit
-   git push origin prod
-   ```
-
-5. **Merge to other branches** (keep all branches in sync)
-   ```bash
-   # UAT
-   git checkout uat
-   git merge hotfix/indian-currency-format --no-edit
-   git push origin uat
-
-   # QA
-   git checkout qa
-   git merge hotfix/indian-currency-format --no-edit
-   git push origin qa
-
-   # Develop
-   git checkout develop
-   git merge hotfix/indian-currency-format --no-edit
-   git push origin develop
-   ```
-
-6. **Verify deployments**
-   - Check Vercel dashboard for successful deployments
-   - Test on production URL
-   - Verify all environments are in sync
-
-7. **Optional: Tag version** (for tracking)
-   ```bash
-   git checkout prod
-   git tag -a v1.0.1-hotfix -m "Hotfix: Indian currency formatting"
-   git push origin v1.0.1-hotfix
-   ```
-
-**Real Example:**
-```bash
-# Hotfix: Add Indian Lakh/Crore currency formatting
-git checkout prod
-git checkout -b hotfix/indian-currency-format
-# ... make changes to lib/utils/format.ts ...
-# ... update all dashboard pages to use formatCentsIndian() ...
-npm run build  # ✅ Build successful
-git add -A
-git commit -m "hotfix: add Indian currency formatting"
-git checkout prod && git merge hotfix/indian-currency-format --no-edit
-git push origin prod  # 🚀 Deploys to production immediately
-# Merge to uat, qa, develop to keep branches in sync
-```
+1. Create hotfix branch from `prod`
+2. Fix the issue
+3. Test thoroughly
+4. Merge to `prod` (emergency)
+5. Merge to `uat`, `qa`, `develop` (keep in sync)
+6. Tag new version
 
 ---
 
