@@ -1,0 +1,130 @@
+# CodeRabbit Configuration for FinArif
+# Multi-branch workflow: develop → qa → uat → prod
+
+language: "en-US"
+early_access: false
+enable_free_tier: true
+
+reviews:
+  # ✅ Enable reviews on ALL your branches
+  review_status: true
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - develop    # Main development branch
+      - qa         # Quality assurance
+      - uat        # User acceptance testing
+      - prod       # Production
+      - main       # Just in case
+      - master     # Legacy name
+
+  # Review settings for FinArif
+  profile: "assertive"  # More strict for fintech
+
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false  # Skip the AI poems
+  review_title: "🤖 CodeRabbit Review"
+
+  collapse_walkthrough: false
+
+  # What to focus on
+  tools:
+    ast-grep:
+      enabled: true
+    shellcheck:
+      enabled: true
+    ruff:
+      enabled: false  # Python linter, not needed
+    markdownlint:
+      enabled: true
+    github-checks:
+      enabled: true
+      timeout_ms: 90000
+
+  # Path filters for FinArif
+  path_instructions:
+    - path: "lib/calculations/**"
+      instructions: |
+        Critical financial calculations - review extra carefully:
+        - All money must be in cents (integers)
+        - No floating-point arithmetic for currency
+        - Check for division by zero
+        - Verify formulas match BRD document
+        - All functions must have JSDoc comments
+        - WACC formula: Σ(sourceAmount / totalCapital) × sourceRate
+        - Check for off-by-one errors in date calculations
+        - Inclusive vs exclusive day counts must be explicit
+
+    - path: "lib/data/**"
+      instructions: |
+        Data management and stores:
+        - Event sourcing: history must be immutable (append-only)
+        - No mutations of existing entries
+        - All changes create new history records
+        - Check that UI reads from the correct data source
+        - Verify history store and UI state are synchronized
+
+    - path: "app/**"
+      instructions: |
+        Next.js pages and components:
+        - Check TypeScript strict mode compliance
+        - No 'any' types allowed
+        - Proper error boundaries
+        - Loading states for async operations
+        - State management: verify refreshKey usage for re-renders
+        - Check that components read from history store, not static constants
+
+    - path: "components/**"
+      instructions: |
+        UI components:
+        - Props should have TypeScript interfaces
+        - Use shadcn/ui components when possible
+        - Follow existing component patterns
+        - Dialog forms: validate all inputs client-side
+        - Date pickers: prevent future dates where required
+        - Form validation: show clear error messages
+
+    - path: "lib/utils/**"
+      instructions: |
+        Utility functions:
+        - Pure functions only (no side effects)
+        - Handle edge cases (empty arrays, null, undefined)
+        - Date utilities: document inclusive vs exclusive behavior
+        - Add JSDoc with examples for complex logic
+
+# Language-specific settings
+chat:
+  auto_reply: true
+
+# What CodeRabbit should ignore
+ignore:
+  - "**/*.md"  # Don't review markdown (except PRs to docs)
+  - "**/package-lock.json"
+  - "**/yarn.lock"
+  - "**/.next/**"
+  - "**/node_modules/**"
+  - "**/public/**"
+  - "**/.vercel/**"
+
+# Custom instructions for common patterns
+instructions:
+  - |
+    For any function that calculates date ranges:
+    - Explicitly document if day counts are inclusive or exclusive
+    - Add comments showing example: "Feb 1 to Feb 28 = 27 days (exclusive) or 28 days (inclusive)"
+    - Verify threshold comparisons match the counting method
+
+  - |
+    For any component reading data:
+    - Check if data source is static constant or dynamic store
+    - Verify UI updates when underlying data changes
+    - Ensure refreshKey or state updates trigger re-renders
+
+  - |
+    For period-based calculations:
+    - Verify period type detection logic handles edge cases:
+      * Short months (February with 28/29 days)
+      * Leap years vs non-leap years
+      * Custom date ranges vs standard periods
