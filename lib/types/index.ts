@@ -147,3 +147,15 @@ export interface FeeTier {
   fee: number; // Fee rate as decimal
   level: RiskLevel;
 }
+
+/**
+ * Re-export capital history types
+ * Phase 1 - Wave 1: Time-Based WACC Capital Management
+ */
+export type {
+  CapitalSourceHistory,
+  PeriodType,
+  WACCSnapshot,
+  PeriodAnalysis,
+  DateRange,
+} from './capital-history';
