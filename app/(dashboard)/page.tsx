@@ -66,7 +66,7 @@ export default function DashboardPage(): React.ReactElement {
   const metrics = calculateDashboardMetrics(transactions);
 
   // Get 10 most recent transactions (sorted by disbursement date)
-  const recentTransactions = transactions
+  const recentTransactions = [...transactions]
     .sort((a, b) => b.disbursementDate.getTime() - a.disbursementDate.getTime())
     .slice(0, 10);
 
