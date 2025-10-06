@@ -93,6 +93,24 @@ export function WACCTrendChart({
     waccPercentage: point.wacc * 100, // Convert to percentage
   }));
 
+  // Calculate dynamic Y-axis domain based on data
+  // Extract all WACC percentage values, filtering out invalid entries
+  const waccValues = chartData
+    .map((point) => point.waccPercentage)
+    .filter((value) => typeof value === 'number' && !isNaN(value) && isFinite(value));
+
+  // Calculate max WACC with 10% headroom
+  const maxWACC = waccValues.length > 0 ? Math.max(...waccValues) : 0;
+  const headroomFactor = 1.1; // 10% headroom above max value
+  const maxWithHeadroom = maxWACC * headroomFactor;
+
+  // Use sensible minimum (10%) to avoid tiny charts for low WACC values
+  const minDomainCeiling = 10;
+  const dynamicMax = Math.max(maxWithHeadroom, minDomainCeiling);
+
+  // Round up to nearest 5 for cleaner axis labels
+  const roundedMax = Math.ceil(dynamicMax / 5) * 5;
+
   return (
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={chartData}>
@@ -108,7 +126,7 @@ export function WACCTrendChart({
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          domain={[0, 25]}
+          domain={[0, roundedMax]}
           tickFormatter={(value: number) => `${value}%`}
           className="fill-muted-foreground"
         />

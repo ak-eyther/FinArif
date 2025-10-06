@@ -33,6 +33,35 @@ import {
 } from '@/lib/utils/date-period';
 
 // ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Check if a date is the start of a calendar quarter
+ *
+ * Quarters start on:
+ * - Q1: January 1
+ * - Q2: April 1
+ * - Q3: July 1
+ * - Q4: October 1
+ *
+ * @param date - Date to check
+ * @returns True if date is start of a quarter
+ */
+function isQuarterStart(date: Date): boolean {
+  const month = date.getMonth(); // 0-indexed (0 = Jan, 1 = Feb, etc.)
+  const day = date.getDate();
+
+  // Must be the 1st day of the month
+  if (day !== 1) {
+    return false;
+  }
+
+  // Must be January (0), April (3), July (6), or October (9)
+  return month === 0 || month === 3 || month === 6 || month === 9;
+}
+
+// ============================================================================
 // CORE WACC CALCULATION FUNCTIONS
 // ============================================================================
 
@@ -381,6 +410,7 @@ export function getWACCTrendData(
     const endSnapshot = calculateWACCAtDate(periodRange.endDate, history);
 
     // Determine period type based on date range characteristics
+    // Use else-if ordering to make checks mutually exclusive
     let periodType: PeriodType = 'custom';
 
     // getDaysBetween returns exclusive count (difference), but we need inclusive
@@ -388,33 +418,29 @@ export function getWACCTrendData(
     const daysDiff = getDaysBetween(periodRange.startDate, periodRange.endDate);
     const inclusiveDays = daysDiff + 1;
 
-    // Check if it's a monthly period (28-31 days inclusive)
-    if (inclusiveDays >= 28 && inclusiveDays <= 31) {
+    // Check if it's a yearly period (365-366 days inclusive)
+    if (inclusiveDays >= 365 && inclusiveDays <= 366) {
+      periodType = 'yearly';
+    }
+    // Check if it's a quarterly period (90-92 days AND starts on quarter boundary)
+    else if (inclusiveDays >= 90 && inclusiveDays <= 92 && isQuarterStart(periodRange.startDate)) {
+      periodType = 'quarterly';
+    }
+    // Check if it's a rolling 90-day period (exactly 90 days, NOT a quarter)
+    else if (inclusiveDays === 90) {
+      periodType = '90-day';
+    }
+    // Check if it's a rolling 60-day period (exactly 60 days)
+    else if (inclusiveDays === 60) {
+      periodType = '60-day';
+    }
+    // Check if it's a monthly period (28-31 days inclusive, starts on month boundary)
+    else if (inclusiveDays >= 28 && inclusiveDays <= 31) {
       const isStartOfMonth = periodRange.startDate.getDate() === 1;
       const isEndOfMonth = periodRange.endDate.getDate() >= 28;
       if (isStartOfMonth && isEndOfMonth) {
         periodType = 'monthly';
       }
-    }
-
-    // Check if it's a quarterly period (90-92 days inclusive)
-    if (inclusiveDays >= 90 && inclusiveDays <= 92) {
-      periodType = 'quarterly';
-    }
-
-    // Check if it's a yearly period (365-366 days inclusive)
-    if (inclusiveDays >= 365 && inclusiveDays <= 366) {
-      periodType = 'yearly';
-    }
-
-    // Check if it's a 60-day period (60 inclusive)
-    if (inclusiveDays === 60) {
-      periodType = '60-day';
-    }
-
-    // Check if it's a 90-day period (90 inclusive)
-    if (inclusiveDays === 90) {
-      periodType = '90-day';
     }
 
     // Format period label using utility function

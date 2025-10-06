@@ -299,6 +299,34 @@ export function formatPeriodLabel(
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
   ];
 
+  /**
+   * Helper function to format a date range label
+   * Handles year boundaries intelligently:
+   * - Same year: "Mon Day - Mon Day, Year"
+   * - Different years: "Mon Day, Year - Mon Day, Year"
+   *
+   * @param start - Start date
+   * @param end - End date
+   * @returns Formatted date range string
+   */
+  const formatDateRange = (start: Date, end: Date): string => {
+    const startMonth = monthNames[start.getMonth()];
+    const startDay = start.getDate();
+    const startYear = start.getFullYear();
+
+    const endMonth = monthNames[end.getMonth()];
+    const endDay = end.getDate();
+    const endYear = end.getFullYear();
+
+    // Same year: compact format
+    if (startYear === endYear) {
+      return `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${startYear}`;
+    }
+
+    // Different years: full format with both years
+    return `${startMonth} ${startDay}, ${startYear} - ${endMonth} ${endDay}, ${endYear}`;
+  };
+
   switch (periodType) {
     case 'monthly': {
       const month = monthNames[startDate.getMonth()];
@@ -318,33 +346,15 @@ export function formatPeriodLabel(
     }
 
     case '60-day': {
-      const startMonth = monthNames[startDate.getMonth()];
-      const startDay = startDate.getDate();
-      const endMonth = monthNames[endDate.getMonth()];
-      const endDay = endDate.getDate();
-      const year = startDate.getFullYear();
-      return `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${year}`;
+      return formatDateRange(startDate, endDate);
     }
 
     case '90-day': {
-      const startMonth = monthNames[startDate.getMonth()];
-      const startDay = startDate.getDate();
-      const endMonth = monthNames[endDate.getMonth()];
-      const endDay = endDate.getDate();
-      const year = startDate.getFullYear();
-      return `${startMonth} ${startDay} - ${endMonth} ${endDay}, ${year}`;
+      return formatDateRange(startDate, endDate);
     }
 
     case 'custom': {
-      const startMonth = monthNames[startDate.getMonth()];
-      const startDay = startDate.getDate();
-      const startYear = startDate.getFullYear();
-
-      const endMonth = monthNames[endDate.getMonth()];
-      const endDay = endDate.getDate();
-      const endYear = endDate.getFullYear();
-
-      return `${startMonth} ${startDay}, ${startYear} - ${endMonth} ${endDay}, ${endYear}`;
+      return formatDateRange(startDate, endDate);
     }
 
     default:

@@ -405,7 +405,7 @@ mockTransactions.forEach(tx => {
  * Get all transactions
  */
 export function getTransactions(): Transaction[] {
-  return [...mockTransactions];
+  return mockTransactions;
 }
 
 /**
