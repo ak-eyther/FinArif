@@ -106,6 +106,7 @@ export default function ProviderDashboardPage(): React.ReactElement {
           </p>
         </div>
         <button
+          type="button"
           onClick={handleExport}
           className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
         >
@@ -117,10 +118,11 @@ export default function ProviderDashboardPage(): React.ReactElement {
       {/* Provider Selector and Date Range */}
       <div className="flex gap-4">
         <div className="flex-1">
-          <label className="mb-2 block text-sm font-medium text-slate-700">
+          <label htmlFor="provider-select" className="mb-2 block text-sm font-medium text-slate-700">
             Select Provider
           </label>
           <select
+            id="provider-select"
             value={selectedProviderId}
             onChange={e => setSelectedProviderId(e.target.value)}
             className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -133,10 +135,11 @@ export default function ProviderDashboardPage(): React.ReactElement {
           </select>
         </div>
         <div className="flex-1">
-          <label className="mb-2 block text-sm font-medium text-slate-700">
+          <label htmlFor="date-range-select" className="mb-2 block text-sm font-medium text-slate-700">
             Date Range
           </label>
           <select
+            id="date-range-select"
             value={dateRange}
             onChange={e => setDateRange(Number(e.target.value))}
             className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -157,11 +160,12 @@ export default function ProviderDashboardPage(): React.ReactElement {
         <CardContent>
           <div className="flex items-center gap-4">
             <div className="flex-1">
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label htmlFor="discount-percentage" className="mb-2 block text-sm font-medium text-slate-700">
                 Global Discount Percentage (OPD & IPD)
               </label>
               <div className="flex items-center gap-4">
                 <input
+                  id="discount-percentage"
                   type="number"
                   min="0"
                   max="100"
