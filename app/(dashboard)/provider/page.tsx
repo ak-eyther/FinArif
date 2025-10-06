@@ -10,6 +10,7 @@ import React, { useState, useMemo } from 'react';
 import { getProviders, getClaimsByProviderId } from '@/lib/provider-data';
 import { calculateProviderStats, calculateUnpaidClaimsAging } from '@/lib/calculations/provider-stats';
 import { formatCents } from '@/lib/utils/format';
+import { sanitizeCsvField } from '@/lib/utils/csv';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
@@ -73,13 +74,13 @@ export default function ProviderDashboardPage(): React.ReactElement {
     const csvContent = [
       ['Visit Number', 'Type', 'Amount (KES)', 'Service Date', 'Submission Date', 'Status', 'Insurer'].join(','),
       ...filteredClaims.map(claim => [
-        claim.visitNumber,
-        claim.claimType,
+        sanitizeCsvField(claim.visitNumber),
+        sanitizeCsvField(claim.claimType),
         (claim.claimAmountCents / 100).toFixed(2),
         claim.serviceDate.toISOString().split('T')[0],
         claim.submissionDate.toISOString().split('T')[0],
-        claim.status,
-        claim.insuranceName,
+        sanitizeCsvField(claim.status),
+        sanitizeCsvField(claim.insuranceName),
       ].join(','))
     ].join('\n');
 
