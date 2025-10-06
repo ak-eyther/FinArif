@@ -29,29 +29,38 @@
 
 ## 🔍 Review Requests (⚠️ MANDATORY - DO NOT SKIP)
 
-### @coderabbitai - Automated Review
+### @coderabbitai - Comprehensive Automated Review
 <!-- CodeRabbit will auto-review, but you can add specific focus areas -->
 
 Please perform comprehensive review with focus on:
-- [ ] Security vulnerabilities
+
+**Code Quality & Security:**
+- [ ] Security vulnerabilities and best practices
 - [ ] Financial calculation accuracy (if applicable)
-- [ ] Performance optimization
-- [ ] TypeScript type safety
-- [ ] React best practices
-- [ ] Code quality and maintainability
+- [ ] TypeScript type safety (strict mode compliance)
+- [ ] No `any` types or unsafe assertions
+- [ ] Error handling and edge cases
+
+**Architecture & Design:**
+- [ ] Architecture decisions and patterns
+- [ ] Code organization and structure
+- [ ] Component composition and reusability
+- [ ] Separation of concerns
+- [ ] Scalability considerations
+
+**Performance & Best Practices:**
+- [ ] Performance optimization opportunities
+- [ ] React best practices (hooks, memo, forwardRef)
+- [ ] Unnecessary re-renders or memory leaks
+- [ ] Bundle size impact
+
+**Production Readiness:**
+- [ ] Breaking changes identified
+- [ ] Backward compatibility
+- [ ] Documentation completeness
 
 **Specific areas to review:**
 <!-- Add any specific concerns or areas you want CodeRabbit to focus on -->
-
-
-
-### @codex - Architecture Review
-
-Please validate:
-- Architecture decisions
-- Design patterns used
-- Code organization
-- Scalability considerations
 
 ### @ak-eyther - Final Approval
 

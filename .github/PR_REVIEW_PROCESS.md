@@ -89,19 +89,17 @@ git push origin feature/my-feature
 
 ## Review Requests (MANDATORY - NEVER SKIP THIS)
 
-### @coderabbitai - Automated Review
+### @coderabbitai - Comprehensive Automated Review
 Please perform comprehensive review with focus on:
-- Security vulnerabilities
-- Code quality
-- Performance issues
-- Best practices
+- Security vulnerabilities and best practices
+- Code quality and maintainability
+- Performance issues and optimization
+- Architecture decisions and patterns
+- Design patterns and code organization
+- TypeScript type safety
+- React best practices
+- Production readiness
 - [Specific areas to review]
-
-### @codex - Architecture Review
-Please validate:
-- Architecture decisions
-- Design patterns
-- Code organization
 
 ### @ak-eyther - Final Approval
 Please review and approve for:
