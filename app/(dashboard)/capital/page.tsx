@@ -6,7 +6,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
@@ -16,11 +16,17 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { CAPITAL_SOURCES } from '@/lib/constants';
 import { getActiveTransactions } from '@/lib/mock-data';
-import type { Cents, CapitalSource } from '@/lib/types';
+import type { Cents, CapitalSource, PeriodType, DateRange } from '@/lib/types';
 import { formatCentsIndian, formatPercentage } from '@/lib/utils/format';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { AddCapitalSourceDialog } from '@/components/capital/AddCapitalSourceDialog';
+import { PeriodSelector } from '@/components/capital/PeriodSelector';
+import { WACCTrendChart } from '@/components/capital/WACCTrendChart';
+import { getCapitalHistory, initializeCapitalHistory, getActiveCapitalSources } from '@/lib/data/capital-history-store';
+import { calculateWACCAtDate, calculatePeriodWACC } from '@/lib/calculations/wacc';
+import { getPeriodDates } from '@/lib/utils/date-period';
+import { generateWACCTrendData } from '@/lib/utils/trend-data';
 
 /**
  * Extended capital source with calculated utilization
@@ -37,6 +43,9 @@ interface CapitalSourceWithUtilization extends CapitalSource {
 function calculateCapitalUtilization(): CapitalSourceWithUtilization[] {
   const activeTransactions = getActiveTransactions();
 
+  // Get active capital sources from history store (not static constant)
+  const activeSources = getActiveCapitalSources();
+
   // Group active transactions by capital source and sum amounts
   const usedBySource = new Map<string, number>();
 
@@ -49,7 +58,7 @@ function calculateCapitalUtilization(): CapitalSourceWithUtilization[] {
   });
 
   // Create new capital sources with updated usage
-  return CAPITAL_SOURCES.map((source) => {
+  return activeSources.map((source) => {
     const usedCents = (usedBySource.get(source.name) || 0) as Cents;
     const remainingCents = (source.availableCents - usedCents) as Cents;
     const utilizationRate = source.availableCents > 0
@@ -137,7 +146,32 @@ function CustomTooltip({ active, payload }: {
  * Capital Management Page Component
  */
 export default function CapitalPage(): React.ReactElement {
-  const capitalSources = calculateCapitalUtilization();
+  // State for dialog
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // State for capital sources
+  const [capitalSources, setCapitalSources] = useState<CapitalSourceWithUtilization[]>([]);
+
+  // State for period selection
+  const [selectedPeriod, setSelectedPeriod] = useState<{
+    periodType: PeriodType;
+    dateRange: DateRange;
+  }>({
+    periodType: 'monthly',
+    dateRange: getPeriodDates('monthly', new Date()),
+  });
+
+  // Recalculate capital sources
+  const refreshCapitalSources = () => {
+    setCapitalSources(calculateCapitalUtilization());
+  };
+
+  // Initialize capital history on mount
+  useEffect(() => {
+    initializeCapitalHistory();
+    refreshCapitalSources();
+  }, []);
+
   const chartData = prepareChartData(capitalSources);
 
   // Calculate total metrics
@@ -154,18 +188,52 @@ export default function CapitalPage(): React.ReactElement {
   const totalRemaining = (totalAvailable - totalUsed) as Cents;
   const overallUtilization = totalAvailable > 0 ? totalUsed / totalAvailable : 0;
 
+  // Get capital history for WACC calculations
+  const capitalHistory = getCapitalHistory();
+
+  // Calculate current WACC
+  const currentWACCSnapshot = calculateWACCAtDate(new Date(), capitalHistory);
+  const currentWACC = currentWACCSnapshot.wacc;
+
+  // Calculate period WACC metrics
+  const periodWACC = calculatePeriodWACC(
+    selectedPeriod.dateRange.startDate,
+    selectedPeriod.dateRange.endDate,
+    capitalHistory
+  );
+
+  // Generate trend data based on period type
+  const trendData = generateWACCTrendData(
+    selectedPeriod.periodType,
+    selectedPeriod.dateRange,
+    capitalHistory
+  );
+
+  // Handler for successful capital source addition
+  const handleCapitalSourceAdded = () => {
+    // Refresh capital sources to pick up the new source from history
+    refreshCapitalSources();
+  };
+
   return (
     <div className="flex flex-col gap-6">
       {/* Page Header */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Capital Management</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold tracking-tight">Capital Management</h1>
+          <AddCapitalSourceDialog
+            isOpen={isDialogOpen}
+            onOpenChange={setIsDialogOpen}
+            onSuccess={handleCapitalSourceAdded}
+          />
+        </div>
         <p className="text-muted-foreground">
           Monitor capital sources and utilization across your portfolio
         </p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-5">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Available</CardTitle>
@@ -215,6 +283,20 @@ export default function CapitalPage(): React.ReactElement {
             </p>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Current WACC</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {formatPercentage(currentWACC)}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Weighted average cost
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Utilization Bar Chart */}
@@ -249,6 +331,56 @@ export default function CapitalPage(): React.ReactElement {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      {/* WACC Analysis Over Time */}
+      <Card>
+        <CardHeader>
+          <CardTitle>WACC Analysis Over Time</CardTitle>
+          <CardDescription>
+            Weighted Average Cost of Capital trends across different time periods
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Period Selector */}
+          <PeriodSelector
+            value={selectedPeriod}
+            onChange={setSelectedPeriod}
+          />
+
+          {/* Period Metrics */}
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="rounded-lg border p-4">
+              <div className="text-sm font-medium text-muted-foreground">
+                Start WACC
+              </div>
+              <div className="mt-2 text-2xl font-bold">
+                {formatPercentage(periodWACC.start)}
+              </div>
+            </div>
+            <div className="rounded-lg border p-4">
+              <div className="text-sm font-medium text-muted-foreground">
+                End WACC
+              </div>
+              <div className="mt-2 text-2xl font-bold">
+                {formatPercentage(periodWACC.end)}
+              </div>
+            </div>
+            <div className="rounded-lg border p-4">
+              <div className="text-sm font-medium text-muted-foreground">
+                Average WACC
+              </div>
+              <div className="mt-2 text-2xl font-bold">
+                {formatPercentage(periodWACC.average)}
+              </div>
+            </div>
+          </div>
+
+          {/* WACC Trend Chart */}
+          <div className="mt-6">
+            <WACCTrendChart data={trendData} height={350} />
+          </div>
         </CardContent>
       </Card>
 
