@@ -64,6 +64,7 @@ Please review and approve for deployment to: **[environment name]**
 ## 🧪 Testing
 
 ### Test Coverage
+
 - [ ] Unit tests added/updated
 - [ ] Integration tests added/updated
 - [ ] Manual testing completed
@@ -90,14 +91,17 @@ Please review and approve for deployment to: **[environment name]**
 ## 🚀 Deployment Notes
 
 ### Database Changes
+
 - [ ] No database changes
 - [ ] Database migrations included: <!-- describe -->
 
 ### Environment Variables
+
 - [ ] No new environment variables
 - [ ] New variables required: <!-- list them -->
 
 ### Breaking Changes
+
 - [ ] No breaking changes
 - [ ] Breaking changes (describe below):
 
@@ -153,6 +157,7 @@ git push origin prod
 <!-- Mark ALL items with 'x' before submitting -->
 
 ### Code Quality
+
 - [ ] My code follows the project's style guide
 - [ ] I have performed a self-review of my code
 - [ ] I have commented complex/critical code sections
@@ -160,23 +165,27 @@ git push origin prod
 - [ ] No `any` types in TypeScript (strict mode compliant)
 
 ### Testing
+
 - [ ] I have added tests that prove my fix/feature works
 - [ ] New and existing unit tests pass locally
 - [ ] I have tested edge cases
 - [ ] I have tested error scenarios
 
 ### Documentation
+
 - [ ] I have updated relevant documentation
 - [ ] I have added JSDoc comments for new functions
 - [ ] Breaking changes are documented
 
 ### Review Process ⚠️ MANDATORY
+
 - [ ] I have tagged `@coderabbitai` for automated review
 - [ ] I have tagged `@codex` for architecture review
 - [ ] I have assigned `@ak-eyther` as reviewer
 - [ ] I understand this PR cannot be merged without approvals
 
 ### Deployment
+
 - [ ] This PR has no merge conflicts
 - [ ] All CI/CD checks are passing (or will pass)
 - [ ] Rollback plan is documented above
