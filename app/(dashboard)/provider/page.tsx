@@ -10,7 +10,7 @@ import React, { useState, useMemo } from 'react';
 import { getProviders, getClaimsByProviderId } from '@/lib/provider-data';
 import { calculateProviderStats, calculateUnpaidClaimsAging } from '@/lib/calculations/provider-stats';
 import { formatCents } from '@/lib/utils/format';
-import { sanitizeCsvField } from '@/lib/utils/csv';
+import { sanitizeCsvField, sanitizeFilename } from '@/lib/utils/csv';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
@@ -48,6 +48,8 @@ export default function ProviderDashboardPage(): React.ReactElement {
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - dateRange);
 
+    // Inclusive date filter: includes claims from exactly startDate through endDate
+    // "Last N days" includes both the claim from N days ago AND today
     return allClaims.filter(
       claim => claim.serviceDate >= startDate && claim.serviceDate <= endDate
     );
@@ -87,9 +89,10 @@ export default function ProviderDashboardPage(): React.ReactElement {
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
+    const safeProviderName = sanitizeFilename(selectedProvider?.name);
     a.setAttribute('hidden', '');
     a.setAttribute('href', url);
-    a.setAttribute('download', `claims_${selectedProvider?.name}_${dateRange}days.csv`);
+    a.setAttribute('download', `claims_${safeProviderName}_${dateRange}days.csv`);
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
