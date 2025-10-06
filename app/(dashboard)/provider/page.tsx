@@ -76,9 +76,9 @@ export default function ProviderDashboardPage(): React.ReactElement {
       ...filteredClaims.map(claim => [
         sanitizeCsvField(claim.visitNumber),
         sanitizeCsvField(claim.claimType),
-        (claim.claimAmountCents / 100).toFixed(2),
-        claim.serviceDate.toISOString().split('T')[0],
-        claim.submissionDate.toISOString().split('T')[0],
+        sanitizeCsvField((claim.claimAmountCents / 100).toFixed(2)),
+        sanitizeCsvField(claim.serviceDate.toISOString().split('T')[0]),
+        sanitizeCsvField(claim.submissionDate.toISOString().split('T')[0]),
         sanitizeCsvField(claim.status),
         sanitizeCsvField(claim.insuranceName),
       ].join(','))
