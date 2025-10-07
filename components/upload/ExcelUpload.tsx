@@ -119,13 +119,13 @@ export function ExcelUpload({ onUploadSuccess, onUploadError }: ExcelUploadProps
         throw new Error(data.error || 'Upload failed');
       }
 
-      if (data.batchId && data.filename && data.totalRows !== undefined && data.previewRows && data.headers) {
+      if (data.data?.batchId && data.data?.filename && data.data?.rowCount !== undefined && data.data?.previewRows && data.data?.headers) {
         onUploadSuccess({
-          batchId: data.batchId,
-          filename: data.filename,
-          totalRows: data.totalRows,
-          previewRows: data.previewRows,
-          headers: data.headers,
+          batchId: data.data.batchId,
+          filename: data.data.filename,
+          totalRows: data.data.rowCount,
+          previewRows: data.data.previewRows,
+          headers: data.data.headers,
         });
         setSelectedFile(null);
       }

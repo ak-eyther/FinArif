@@ -20,7 +20,7 @@ export default function UploadPage() {
   const [uploadData, setUploadData] = useState<UploadData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleUploadSuccess = (data: UploadData) => {
+  const handleUploadSuccess = (data: any) => {
     setUploadData(data);
     setError(null);
   };
