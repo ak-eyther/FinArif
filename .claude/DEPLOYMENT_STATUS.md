@@ -36,7 +36,7 @@ Your `vercel.json` shows automatic deployments are enabled for:
 ### Expected Behavior
 Since you pushed `feature/payer-crud`, Vercel will:
 - **Detect the push** via GitHub webhook
-- **Build the project** using `npm run build --turbopack`
+- **Build the project** using `npm run build`
 - **Deploy to preview** environment
 - **Generate preview URL** (check Vercel dashboard)
 
