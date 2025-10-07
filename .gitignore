@@ -2,6 +2,12 @@
 finarif-dashboard-backup/
 *.backup
 
+# Python (unrelated files)
+*.py
+requirements*.txt
+__pycache__/
+*.pyc
+
 # macOS
 .DS_Store
 .AppleDouble
