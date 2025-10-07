@@ -67,8 +67,7 @@ export const authConfig: NextAuthConfig = {
     session: async ({ session, token }) => {
       if (session.user && token.sub) {
         session.user.id = token.sub;
-        const role: AuthenticatedUser['role'] = token.role ?? 'admin';
-        session.user.role = role;
+        session.user.role = 'admin';
         session.user.fullName =
           typeof token.fullName === 'string' ? token.fullName : session.user.fullName;
       }
