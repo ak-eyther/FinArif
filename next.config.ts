@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
     // Allow build to succeed even with ESLint errors
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    // Fix Tailwind v4 CSS minification issue
+    optimizeCss: false,
+  },
 };
 
 export default nextConfig;
