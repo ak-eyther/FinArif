@@ -9,10 +9,14 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizeCss: false,
-    // Disable server actions to avoid tracing issues
-    serverActions: {
-      bodySizeLimit: '2mb',
-    },
+  },
+  // Workaround for route group tracing bug in Next.js 15.x
+  outputFileTracingExcludes: {
+    '*': [
+      'node_modules/@swc/core-linux-x64-gnu',
+      'node_modules/@swc/core-linux-x64-musl',
+      'node_modules/@esbuild/linux-x64',
+    ],
   },
 };
 
