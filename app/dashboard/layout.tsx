@@ -30,17 +30,17 @@ const navItems: NavItem[] = [
   },
   {
     label: 'Transactions',
-    href: '/transactions',
+    href: '/dashboard/transactions',
     icon: ArrowLeftRight,
   },
   {
     label: 'Risk Analysis',
-    href: '/risk',
+    href: '/dashboard/risk',
     icon: TrendingUp,
   },
   {
     label: 'Capital Management',
-    href: '/capital',
+    href: '/dashboard/capital',
     icon: Wallet,
   },
 ];
