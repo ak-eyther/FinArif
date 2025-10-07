@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPayerById } from '@/lib/queries/payers';
 import {
-  getCachedPayerAnalytics,
+  getPayerAnalytics,
   refreshPayerAnalytics,
 } from '@/lib/queries/payer-analytics';
 
@@ -49,7 +49,7 @@ export async function GET(
       analytics = await refreshPayerAnalytics(payerId);
     } else {
       // Try to get cached analytics
-      analytics = await getCachedPayerAnalytics(payerId);
+      analytics = await getPayerAnalytics(payerId);
 
       // If cache miss or stale, refresh
       if (!analytics) {

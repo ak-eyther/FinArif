@@ -71,7 +71,7 @@ export function SchemeBreakdownChart({ schemes }: SchemeBreakdownChartProps) {
                 cx="50%"
                 cy="50%"
                 outerRadius={120}
-                label={renderCustomLabel}
+                label={false}
                 onClick={handlePieClick}
                 style={{ cursor: 'pointer' }}
               >
@@ -79,23 +79,7 @@ export function SchemeBreakdownChart({ schemes }: SchemeBreakdownChartProps) {
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip
-                formatter={(value: number, name: string, props: typeof chartData[0]) => {
-                  const scheme = schemes.find(s => s.scheme_id === props.payload.scheme_id);
-                  if (!scheme) return [value, name];
-
-                  const percentage = ((scheme.claims / totalClaims) * 100).toFixed(1);
-                  return [
-                    `${value.toLocaleString()} claims (${percentage}%)`,
-                    scheme.name
-                  ];
-                }}
-                contentStyle={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                }}
-              />
+              <Tooltip />
               <Legend
                 verticalAlign="bottom"
                 height={36}

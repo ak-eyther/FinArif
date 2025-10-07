@@ -49,8 +49,10 @@ export function ProviderBreakdownChart({ providers }: ProviderBreakdownChartProp
   }));
 
   // Handle bar click to navigate to provider detail
-  const handleBarClick = (data: TopProvider) => {
-    router.push(`/providers/${data.provider_id}`);
+  const handleBarClick = (data: any) => {
+    if (data && data.provider_id) {
+      router.push(`/providers/${data.provider_id}`);
+    }
   };
 
   return (
@@ -102,7 +104,7 @@ export function ProviderBreakdownChart({ providers }: ProviderBreakdownChartProp
               <Bar
                 dataKey="volume_cents"
                 name="Volume"
-                onClick={handleBarClick}
+                onClick={(data: any) => data?.payer_id || data?.provider_id || data?.scheme_id ? handleBarClick(data) : null}
                 style={{ cursor: 'pointer' }}
               >
                 {chartData.map((entry, index) => (

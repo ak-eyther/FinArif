@@ -135,7 +135,7 @@ export function ProviderBreakdownChart({ providers }: ProviderBreakdownChartProp
             name="Volume (KES)"
             fill="#3b82f6"
             radius={[8, 8, 0, 0]}
-            onClick={handleBarClick}
+            onClick={(data: any) => data?.payer_id || data?.provider_id || data?.scheme_id ? handleBarClick(data) : null}
             cursor="pointer"
           >
             {chartData.map((entry, index) => (

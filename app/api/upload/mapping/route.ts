@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { saveMappings } from '@/lib/queries/mappings';
+import { createMappingsBatch } from '@/lib/queries/mappings';
 import { MappingRule } from '@/lib/types/provider-360';
 
 /**
@@ -56,7 +56,13 @@ export async function POST(request: NextRequest) {
     }
 
     // Save mappings
-    await saveMappings(body.batch_id, body.mappings);
+    await createMappingsBatch(body.mappings.map(m => ({
+      batch_id: body.batch_id,
+      excel_column: m.excel_column,
+      schema_field: m.schema_field,
+      data_type: m.data_type,
+      transform_rule: m.transform_rule ? JSON.stringify(m.transform_rule) : undefined,
+    })));
 
     return NextResponse.json({
       success: true,

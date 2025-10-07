@@ -46,7 +46,7 @@ export function PayerBreakdownChart({
     displayName: item.name.length > 20 ? `${item.name.substring(0, 20)}...` : item.name,
   }));
 
-  const handleBarClick = (data: PayerData) => {
+  const handleBarClick = (data: any) => {
     router.push(`/payers/${data.payer_id}`);
   };
 
@@ -109,7 +109,7 @@ export function PayerBreakdownChart({
               fill="#3b82f6"
               radius={[8, 8, 0, 0]}
               cursor="pointer"
-              onClick={handleBarClick}
+              onClick={(data: any) => data?.payer_id || data?.provider_id || data?.scheme_id ? handleBarClick(data) : null}
             >
               {chartData.map((entry, index) => (
                 <Cell

@@ -16,9 +16,9 @@ import {
   ValidationError,
 } from './data-validator';
 import { createClaim, claimNumberExists } from '@/lib/queries/claims';
-import { getProviderByName, createProvider } from '@/lib/queries/providers';
-import { getPayerByName, createPayer } from '@/lib/queries/payers';
-import { getSchemeByNameAndPayer, createScheme } from '@/lib/queries/schemes';
+import { createProvider } from '@/lib/queries/providers';
+import { createPayer } from '@/lib/queries/payers';
+import { createScheme } from '@/lib/queries/schemes';
 import { updateBatchProgress, updateBatchStatus } from '@/lib/queries/uploads';
 
 export interface ProcessingResult {

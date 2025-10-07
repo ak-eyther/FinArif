@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProviderById } from '@/lib/queries/providers';
 import {
-  getCachedProviderAnalytics,
+  getProviderAnalytics,
   refreshProviderAnalytics,
 } from '@/lib/queries/provider-analytics';
 
@@ -49,7 +49,7 @@ export async function GET(
       analytics = await refreshProviderAnalytics(providerId);
     } else {
       // Try to get cached analytics
-      analytics = await getCachedProviderAnalytics(providerId);
+      analytics = await getProviderAnalytics(providerId);
 
       // If cache miss or stale, refresh
       if (!analytics) {

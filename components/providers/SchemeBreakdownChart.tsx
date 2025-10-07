@@ -106,7 +106,7 @@ export function SchemeBreakdownChart({
               outerRadius={100}
               fill="#8884d8"
               dataKey="value"
-              label={({ name, percent }) => `${name.substring(0, 15)}${name.length > 15 ? '...' : ''} (${(percent * 100).toFixed(0)}%)`}
+              label={({ name, percent }: any) => name ? `${name.substring(0, 15)}${name.length > 15 ? '...' : ''} (${(percent * 100).toFixed(0)}%)` : ''}
             >
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />

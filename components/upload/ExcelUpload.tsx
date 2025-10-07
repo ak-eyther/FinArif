@@ -5,7 +5,19 @@ import { Upload, FileSpreadsheet, X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { ExcelRow, UploadPreviewResponse } from '@/app/api/upload/preview/route';
+// Types
+type ExcelRow = Record<string, any>;
+type UploadPreviewResponse = {
+  success: boolean;
+  data?: {
+    batchId: number;
+    filename: string;
+    rowCount: number;
+    headers: string[];
+    previewRows: ExcelRow[];
+  };
+  error?: string;
+};
 
 export interface ExcelUploadProps {
   onUploadSuccess: (data: {

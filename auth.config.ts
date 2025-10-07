@@ -23,8 +23,8 @@ export const authConfig: NextAuthConfig = {
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
-        const email = credentials?.email?.trim().toLowerCase();
-        const password = credentials?.password?.trim();
+        const email = typeof credentials?.email === 'string' ? credentials.email.trim().toLowerCase() : '';
+        const password = typeof credentials?.password === 'string' ? credentials.password.trim() : '';
 
         if (!email || !password) {
           throw new MissingCredentialsError();
@@ -91,9 +91,9 @@ export const authConfig: NextAuthConfig = {
     },
   },
   logger: {
-    error: (code, metadata) => {
-      const normalized = normalizeAuthError(metadata);
-      console.error(`[auth] error: ${code}`, normalized);
+    error: (error: Error | { error: Error; message?: string }) => {
+      const normalized = normalizeAuthError(error);
+      console.error(`[auth] error:`, normalized);
     },
     warn: (code) => {
       console.warn(`[auth] warning: ${code}`);

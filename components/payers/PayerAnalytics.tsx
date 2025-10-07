@@ -184,7 +184,7 @@ export function PayerAnalytics({ payer, initialAnalytics }: PayerAnalyticsProps)
 
       {/* Monthly Trends Chart */}
       {analytics.monthly_trends && analytics.monthly_trends.length > 0 && (
-        <MonthlyTrendsChart trends={analytics.monthly_trends} />
+        <MonthlyTrendsChart data={analytics.monthly_trends} />
       )}
     </div>
   );
