@@ -8,7 +8,7 @@
  */
 
 import Link from 'next/link';
-import { LayoutDashboard, ArrowLeftRight, TrendingUp, Wallet } from 'lucide-react';
+import { LayoutDashboard, ArrowLeftRight, TrendingUp, Wallet, Building2, CreditCard, FileText, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 
@@ -45,6 +45,29 @@ const navItems: NavItem[] = [
   },
 ];
 
+const provider360Items: NavItem[] = [
+  {
+    label: 'Providers',
+    href: '/providers',
+    icon: Building2,
+  },
+  {
+    label: 'Payers',
+    href: '/payers',
+    icon: CreditCard,
+  },
+  {
+    label: 'Schemes',
+    href: '/schemes',
+    icon: FileText,
+  },
+  {
+    label: 'Upload Claims',
+    href: '/upload',
+    icon: Upload,
+  },
+];
+
 /**
  * Dashboard layout component
  * Wraps all dashboard pages with consistent navigation and branding
@@ -68,7 +91,35 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Navigation Menu */}
         <nav className="flex flex-col gap-1 p-4">
+          {/* Main Navigation */}
           {navItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                  'text-slate-700 hover:bg-slate-100 hover:text-slate-900',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500'
+                )}
+              >
+                <Icon className="h-5 w-5" />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+
+          {/* Separator */}
+          <div className="my-2">
+            <Separator />
+          </div>
+
+          {/* Provider 360 Section */}
+          <div className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            Provider 360
+          </div>
+          {provider360Items.map((item) => {
             const Icon = item.icon;
             return (
               <Link

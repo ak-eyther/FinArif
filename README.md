@@ -40,6 +40,19 @@ Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
 
 ---
 
+## Authentication
+
+```bash
+# Create users table + seed admin credential
+npx tsx scripts/migrate-users.ts
+```
+
+- Default admin credential: `admin@finarif.com` / `password123` (rotate in production).
+- Sessions expire after 60 minutes; `AUTH_SECRET` and `NEXTAUTH_URL` must be set (see `VERCEL_ENV_SETUP_GUIDE.md`).
+- Passwords hashed with bcrypt (12 rounds) inside Vercel Postgres (`sql/schema/00_users.sql`).
+
+---
+
 ## Dashboard Pages
 
 1. **Main Dashboard** (`/`) - 4 key metrics + recent transactions
