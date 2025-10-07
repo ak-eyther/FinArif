@@ -79,10 +79,14 @@ export async function getPayerAnalytics(payerId: number): Promise<PayerAnalytics
 /**
  * Refresh payer analytics cache
  * Calculates all analytics from scratch and updates the cache
+ * Returns the refreshed analytics
  */
-export async function refreshPayerAnalytics(payerId: number): Promise<void> {
+export async function refreshPayerAnalytics(payerId: number): Promise<PayerAnalytics | null> {
   // Call the stored procedure to refresh analytics
   await sql`SELECT refresh_payer_analytics(${payerId});`;
+
+  // Fetch and return the refreshed analytics
+  return getPayerAnalytics(payerId);
 }
 
 /**
