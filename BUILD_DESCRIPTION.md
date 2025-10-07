@@ -215,7 +215,7 @@ npm run test  # All tests passing ✅
 ### Manual Testing Verification
 - ✅ All linting rules pass (0 errors)
 - ✅ TypeScript strict mode (0 errors)
-- ✅ Next.js build successful (Turbopack)
+- ✅ Next.js build successful
 - ✅ CSV export generates valid files
 - ✅ Excel opens CSV without formula execution warnings
 - ✅ Filenames safe across Windows/macOS/Linux
@@ -348,7 +348,7 @@ fa4f188 - feat(provider): claims analytics dashboard
 - **Accessibility Fixes**: 3 WCAG violations resolved
 - **Test Coverage**: 11 tests covering all sanitization logic
 - **Code Review**: All PR comments addressed
-- **Build Time**: ~45 seconds (Turbopack)
+- **Build Time**: ~45 seconds
 
 ---
 
@@ -435,10 +435,10 @@ git push origin qa --force
 **Build Date**: 2025-10-06 16:30 EAT
 **Build Environment**: macOS (Darwin 24.6.0)
 **Node Version**: 20.x
-**Next.js Version**: 15.5.4
+**Next.js Version**: 15.1.0
 **React Version**: 19.1.0
 **TypeScript Version**: 5.x
-**Build Tool**: Turbopack (experimental)
+**Build Tool**: Next.js Webpack
 
 ---
 

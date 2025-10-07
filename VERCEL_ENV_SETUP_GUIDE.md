@@ -61,6 +61,25 @@ Dev:      https://finarif-dashboard-dev.vercel.app
 Prod:     https://finarif-dashboard.vercel.app
 ```
 
+### 3. Postgres / Prisma Database
+
+**What it is:**
+- Primary transactional store hosted on Prisma's managed Postgres (db.prisma.io).
+- Consumed by `@vercel/postgres` in API routes and migration scripts; ready for Prisma Accelerate if we add Prisma Client.
+
+**Environment keys to add:**
+```
+POSTGRES_URL="postgres://66eda481c5339bdc76dddab207ec95c8edc618a3afedcd13aaf6348c5b8beb69:sk_WR-yRdwSbIcD3T-Ge5jAi@db.prisma.io:5432/postgres?sslmode=require"
+POSTGRES_URL_NON_POOLING="postgres://66eda481c5339bdc76dddab207ec95c8edc618a3afedcd13aaf6348c5b8beb69:sk_WR-yRdwSbIcD3T-Ge5jAi@db.prisma.io:5432/postgres?sslmode=require"
+PRISMA_DATABASE_URL="postgres://66eda481c5339bdc76dddab207ec95c8edc618a3afedcd13aaf6348c5b8beb69:sk_WR-yRdwSbIcD3T-Ge5jAi@db.prisma.io:5432/postgres?sslmode=require"
+PRISMA_ACCELERATE_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqd3RfaWQiOjEsInNlY3VyZV9rZXkiOiJza19XUi15UmR3U2JJY0QzVC1HZTVqQWkiLCJhcGlfa2V5IjoiMDFLNlo5MlBCUjJCMUpTNlpKVFZQMzJNM1AiLCJ0ZW5hbnRfaWQiOiI2NmVkYTQ4MWM1MzM5YmRjNzZkZGRhYjIwN2VjOTVjOGVkYzYxOGEzYWZlZGNkMTNhYWY2MzQ4YzViOGJlYjY5IiwiaW50ZXJuYWxfc2VjcmV0IjoiZjg0NzNlMGYtNzFjZi00MGIyLThhODgtNDE3NjRhNzllOWZmIn0.P5uuK2LOOZ-GljQPB-j9AUiX7FF1zkFzDPLdkECx88c"
+```
+
+**Notes:**
+- Create these variables in Vercel for **Preview** and **Production** environments.
+- Locally, copy `.env.example` to `.env.local`; Next.js and the CLI scripts will read the same values automatically.
+- All migration scripts now load `dotenv`, so `npx tsx scripts/...` picks up `.env.local` without extra exports.
+
 ---
 
 ## 🔍 What's This API Route?

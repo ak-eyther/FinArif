@@ -2,7 +2,7 @@
  * Capital Source History Tracking System
  * Phase 1 - Wave 2: Time-Based WACC Capital Management
  *
- * In-memory store for managing capital source history (MVP implementation)
+ * localStorage-backed store for managing capital source history (MVP+ implementation)
  *
  * CRITICAL BUSINESS RULES:
  * - effectiveDate cannot be in the future
@@ -10,22 +10,110 @@
  * - For updates, sourceId must exist in history
  * - All history is immutable (never update existing entries)
  * - Each change creates a new history entry
+ *
+ * PERSISTENCE:
+ * Phase 1 (CURRENT): localStorage for single-user persistence across sessions
+ * Phase 2 (TODO): PostgreSQL + API for multi-user production deployment
+ * See: .claude/roadmap/CAPITAL_PERSISTENCE_PHASE2.md
  */
 
 import type { CapitalSourceHistory, CapitalSource, Cents } from '@/lib/types';
 import { CAPITAL_SOURCES } from '@/lib/constants';
 
 /**
+ * localStorage key for persisting capital history
+ */
+const STORAGE_KEY = 'finarif_capital_history_v1';
+
+/**
  * In-memory store for capital source history
- * All changes are tracked here for audit trail and historical analysis
+ * Synced with localStorage for persistence across page refreshes
  */
 let capitalHistoryStore: CapitalSourceHistory[] = [];
 
 /**
  * Counter for generating unique IDs
- * In production, replace with proper UUID generation
+ * Synced with localStorage to prevent ID collisions
  */
 let historyIdCounter = 1;
+
+/**
+ * Flag to track if store has been initialized from localStorage
+ */
+let isHydrated = false;
+
+/**
+ * Serializes a history entry for localStorage
+ * Converts Date objects to ISO strings for JSON storage
+ */
+function serializeHistory(history: CapitalSourceHistory[]): string {
+  return JSON.stringify(
+    history.map((entry) => ({
+      ...entry,
+      effectiveDate: entry.effectiveDate.toISOString(),
+    }))
+  );
+}
+
+/**
+ * Deserializes history from localStorage
+ * Converts ISO strings back to Date objects
+ */
+function deserializeHistory(json: string): CapitalSourceHistory[] {
+  try {
+    const parsed = JSON.parse(json);
+    return parsed.map((entry: CapitalSourceHistory & { effectiveDate: string }) => ({
+      ...entry,
+      effectiveDate: new Date(entry.effectiveDate),
+    }));
+  } catch (error) {
+    console.error('Failed to deserialize capital history:', error);
+    return [];
+  }
+}
+
+/**
+ * Saves current store to localStorage
+ */
+function persistToStorage(): void {
+  if (typeof window === 'undefined') return; // Skip during SSR
+
+  try {
+    const serialized = serializeHistory(capitalHistoryStore);
+    localStorage.setItem(STORAGE_KEY, serialized);
+    localStorage.setItem(`${STORAGE_KEY}_counter`, String(historyIdCounter));
+  } catch (error) {
+    console.error('Failed to persist capital history to localStorage:', error);
+  }
+}
+
+/**
+ * Loads store from localStorage
+ * Only runs once per session to prevent data loss
+ */
+function hydrateFromStorage(): void {
+  if (typeof window === 'undefined') return; // Skip during SSR
+  if (isHydrated) return; // Already hydrated, don't overwrite
+
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    const storedCounter = localStorage.getItem(`${STORAGE_KEY}_counter`);
+
+    if (stored) {
+      capitalHistoryStore = deserializeHistory(stored);
+      console.log(`✅ Hydrated ${capitalHistoryStore.length} capital history entries from localStorage`);
+    }
+
+    if (storedCounter) {
+      historyIdCounter = parseInt(storedCounter, 10) || 1;
+    }
+
+    isHydrated = true;
+  } catch (error) {
+    console.error('Failed to hydrate capital history from localStorage:', error);
+    isHydrated = true; // Mark as hydrated even on error to prevent infinite loops
+  }
+}
 
 /**
  * Generates a unique history record ID
@@ -109,34 +197,43 @@ function getCurrentSourceState(sourceId: string, asOfDate: Date = new Date()): C
 
 /**
  * Initializes capital history with existing CAPITAL_SOURCES from constants
- * Creates 'ADDED' entries for each source with effectiveDate = 90 days ago
- * This provides demo data for the MVP
+ * Phase 1: Hydrates from localStorage first, only seeds demo data if empty
+ * This provides demo data for the MVP while preserving user additions
  */
 export function initializeCapitalHistory(): void {
-  // Calculate date 90 days ago for demo data
-  const ninetyDaysAgo = new Date();
-  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+  // First, try to load from localStorage
+  hydrateFromStorage();
 
-  // Clear existing store
-  capitalHistoryStore = [];
+  // Only seed demo data if store is completely empty
+  if (capitalHistoryStore.length === 0) {
+    console.log('📦 No saved data found, seeding demo capital sources...');
 
-  // Create history entries for each capital source
-  CAPITAL_SOURCES.forEach((source) => {
-    const sourceId = generateSourceId();
+    // Calculate date 90 days ago for demo data
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
-    const historyEntry: CapitalSourceHistory = {
-      id: generateHistoryId(),
-      sourceId: sourceId,
-      effectiveDate: ninetyDaysAgo,
-      name: source.name,
-      annualRate: source.annualRate,
-      availableCents: source.availableCents,
-      action: 'ADDED',
-      notes: 'Initial capital source - imported from system configuration',
-    };
+    // Create history entries for each capital source
+    CAPITAL_SOURCES.forEach((source) => {
+      const sourceId = generateSourceId();
 
-    capitalHistoryStore.push(historyEntry);
-  });
+      const historyEntry: CapitalSourceHistory = {
+        id: generateHistoryId(),
+        sourceId: sourceId,
+        effectiveDate: ninetyDaysAgo,
+        name: source.name,
+        annualRate: source.annualRate,
+        availableCents: source.availableCents,
+        action: 'ADDED',
+        notes: 'Initial capital source - imported from system configuration',
+      };
+
+      capitalHistoryStore.push(historyEntry);
+    });
+
+    // Persist the demo data to localStorage
+    persistToStorage();
+    console.log(`✅ Seeded ${capitalHistoryStore.length} demo capital sources`);
+  }
 }
 
 /**
@@ -170,6 +267,7 @@ export function addCapitalSource(
   };
 
   capitalHistoryStore.push(historyEntry);
+  persistToStorage(); // Phase 1: Persist to localStorage
 
   return sourceId;
 }
@@ -211,6 +309,7 @@ export function updateCapitalAmount(
   };
 
   capitalHistoryStore.push(historyEntry);
+  persistToStorage(); // Phase 1: Persist to localStorage
 }
 
 /**
@@ -250,6 +349,7 @@ export function updateCapitalRate(
   };
 
   capitalHistoryStore.push(historyEntry);
+  persistToStorage(); // Phase 1: Persist to localStorage
 }
 
 /**
@@ -287,18 +387,30 @@ export function removeCapitalSource(
   };
 
   capitalHistoryStore.push(historyEntry);
+  persistToStorage(); // Phase 1: Persist to localStorage
+}
+
+/**
+ * Deep clones a history entry to prevent external mutation
+ * Creates new Date instance to ensure immutability
+ */
+function cloneHistoryEntry(entry: CapitalSourceHistory): CapitalSourceHistory {
+  return {
+    ...entry,
+    effectiveDate: new Date(entry.effectiveDate), // Clone Date object
+  };
 }
 
 /**
  * Returns all capital source history entries
  * Sorted by effectiveDate in ascending order (oldest first)
  *
- * @returns Read-only copy of all history entries
+ * @returns Deep-cloned array of all history entries (immutable)
  */
 export function getCapitalHistory(): CapitalSourceHistory[] {
-  // Return a deep copy to prevent external modifications
+  // Deep clone entries before sorting to prevent external mutations
   return capitalHistoryStore
-    .slice()
+    .map(cloneHistoryEntry)
     .sort((a, b) => a.effectiveDate.getTime() - b.effectiveDate.getTime());
 }
 
@@ -307,12 +419,12 @@ export function getCapitalHistory(): CapitalSourceHistory[] {
  * Sorted by effectiveDate in ascending order (oldest first)
  *
  * @param sourceId - ID of the capital source
- * @returns Array of history entries for the specified source
+ * @returns Deep-cloned array of history entries for the specified source (immutable)
  */
 export function getHistoryForSource(sourceId: string): CapitalSourceHistory[] {
   return capitalHistoryStore
     .filter(h => h.sourceId === sourceId)
-    .slice()
+    .map(cloneHistoryEntry)
     .sort((a, b) => a.effectiveDate.getTime() - b.effectiveDate.getTime());
 }
 
@@ -323,7 +435,7 @@ export function getHistoryForSource(sourceId: string): CapitalSourceHistory[] {
  *
  * @param startDate - Start of the date range
  * @param endDate - End of the date range
- * @returns Array of history entries within the specified date range
+ * @returns Deep-cloned array of history entries within the specified date range (immutable)
  */
 export function getHistoryInDateRange(
   startDate: Date,
@@ -331,7 +443,7 @@ export function getHistoryInDateRange(
 ): CapitalSourceHistory[] {
   return capitalHistoryStore
     .filter(h => h.effectiveDate >= startDate && h.effectiveDate <= endDate)
-    .slice()
+    .map(cloneHistoryEntry)
     .sort((a, b) => a.effectiveDate.getTime() - b.effectiveDate.getTime());
 }
 
