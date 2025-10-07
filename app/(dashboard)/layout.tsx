@@ -7,6 +7,8 @@
  * - Professional healthcare fintech styling
  */
 
+'use client';
+
 import Link from 'next/link';
 import { LayoutDashboard, ArrowLeftRight, TrendingUp, Wallet, Building2, CreditCard, FileText, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
