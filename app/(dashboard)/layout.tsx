@@ -1,3 +1,4 @@
+
 /**
  * Dashboard layout with sidebar navigation
  *
@@ -8,9 +9,12 @@
  */
 
 import Link from 'next/link';
-import { LayoutDashboard, ArrowLeftRight, TrendingUp, Wallet, Building2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { LayoutDashboard, ArrowLeftRight, TrendingUp, Wallet, Building2, User } from 'lucide-react';
+
+import { auth } from '@/auth';
+import { SignOutButton } from '@/components/auth/SignOutButton';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -54,7 +58,11 @@ const navItems: NavItem[] = [
  * Dashboard layout component
  * Wraps all dashboard pages with consistent navigation and branding
  */
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+export default async function DashboardLayout({ children }: DashboardLayoutProps) {
+  const session = await auth();
+  const fullName = session?.user.fullName ?? 'FinArif Admin';
+  const email = session?.user.email ?? 'admin@finarif.com';
+
   return (
     <div className="flex min-h-screen bg-slate-50">
       {/* Sidebar Navigation */}
@@ -113,12 +121,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               </p>
             </div>
 
-            {/* User info placeholder - can be enhanced later */}
-            <div className="flex items-center gap-2">
-              <div className="text-right">
-                <p className="text-sm font-medium text-slate-900">Board View</p>
-                <p className="text-xs text-slate-600">Executive Dashboard</p>
+            <div className="flex items-center gap-4">
+              <div className="hidden text-right md:block">
+                <p className="text-sm font-medium text-slate-900">{fullName}</p>
+                <p className="text-xs text-slate-600">{email}</p>
               </div>
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-700">
+                <User className="h-5 w-5" />
+              </div>
+              <SignOutButton />
             </div>
           </div>
         </header>
