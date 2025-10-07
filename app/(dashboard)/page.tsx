@@ -4,8 +4,6 @@
  * Displays 4 key metrics and recent transactions table
  */
 
-'use client';
-
 import { getTransactions } from '@/lib/mock-data';
 import { calculateDashboardMetrics } from '@/lib/calculations/dashboard';
 import { formatCents, formatPercentage, formatDateShort } from '@/lib/utils/format';

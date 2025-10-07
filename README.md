@@ -40,6 +40,21 @@ Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
 
 ---
 
+## Database Configuration
+
+1. Copy the provided environment template:
+   ```bash
+   cp .env.example .env.local
+   ```
+2. The sample file contains the Prisma-managed Postgres credentials shared for FinArif:
+   - `POSTGRES_URL` / `POSTGRES_URL_NON_POOLING` feed the `@vercel/postgres` client used by API routes and migration scripts.
+   - `PRISMA_DATABASE_URL` / `PRISMA_ACCELERATE_URL` are ready for Prisma tooling if we layer Prisma Client later.
+3. Next.js picks up `.env.local` automatically. On Vercel, add the same keys in **Settings → Environment Variables** (set for Preview + Production).
+
+After the environment variables are in place you can run the seed/migration scripts (see [Authentication](#authentication)) and the app will connect to the Prisma Postgres instance.
+
+---
+
 ## Authentication
 
 ```bash
