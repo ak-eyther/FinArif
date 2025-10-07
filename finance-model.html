@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinArif Finance Model Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-hint {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            grid-column: 1 / -1;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .result-card h3 {
+            color: #495057;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-card .value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .result-card .subvalue {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .breakdown {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+        }
+
+        .breakdown h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-item.total {
+            background: #f8f9fa;
+            font-weight: 700;
+            color: #667eea;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .positive {
+            color: #28a745;
+        }
+
+        .negative {
+            color: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏦 FinArif Finance Model</h1>
+            <p>Trade Finance Calculator - Understand Your P&L</p>
+        </div>
+
+        <div class="content">
+            <!-- Transaction Details -->
+            <div class="section">
+                <h2>📊 Transaction Details</h2>
+
+                <div class="input-group">
+                    <label>Transaction Amount (KES)</label>
+                    <input type="number" id="txnAmount" value="5000000" step="1000">
+                    <div class="input-hint">Principal amount of the transaction</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Transaction Type</label>
+                    <select id="txnType">
+                        <option value="factoring">Invoice Factoring</option>
+                        <option value="po">Purchase Order Financing</option>
+                        <option value="lc">Letter of Credit</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Duration (Days)</label>
+                    <input type="number" id="duration" value="90" min="1" max="365">
+                    <div class="input-hint">How long until repayment</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Provider Risk Score (1-10)</label>
+                    <input type="number" id="providerRisk" value="5" min="1" max="10">
+                    <div class="input-hint">1 = Low risk, 10 = High risk</div>
+                </div>
+            </div>
+
+            <!-- Pricing & Capital -->
+            <div class="section">
+                <h2>💰 Pricing & Capital</h2>
+
+                <div class="input-group">
+                    <label>Fee Rate (%)</label>
+                    <input type="number" id="feeRate" value="4.0" step="0.1" min="0" max="20">
+                    <div class="input-hint">Fee charged to customer</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Insurance Cost (%)</label>
+                    <input type="number" id="insuranceCost" value="1.5" step="0.1" min="0" max="10">
+                    <div class="input-hint">Cost of credit insurance</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Cost of Funds (%)</label>
+                    <input type="number" id="costOfFunds" value="12.0" step="0.1" min="0" max="30">
+                    <div class="input-hint">Annual cost of capital</div>
+                </div>
+
+                <div class="input-group">
+                    <label>Operating Cost (%)</label>
+                    <input type="number" id="opsCost" value="0.5" step="0.1" min="0" max="5">
+                    <div class="input-hint">Operations & overhead</div>
+                </div>
+
+                <button class="calculate-btn" onclick="calculate()">Calculate P&L</button>
+            </div>
+
+            <!-- Results -->
+            <div class="section results" id="resultsSection" style="display: none;">
+                <h2>📈 Results</h2>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>Revenue</h3>
+                        <div class="value positive" id="revenue">-</div>
+                        <div class="subvalue" id="revenueRate">-</div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>Total Costs</h3>
+                        <div class="value negative" id="costs">-</div>
+                        <div class="subvalue" id="costRate">-</div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>Net Profit</h3>
+                        <div class="value" id="profit">-</div>
+                        <div class="subvalue" id="profitRate">-</div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3>ROE (Annualized)</h3>
+                        <div class="value" id="roe">-</div>
+                        <div class="subvalue">Return on Equity</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h3>💵 Detailed Breakdown</h3>
+                    <div id="breakdownDetails"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatMoney(amount) {
+            return 'KES ' + Math.round(amount).toLocaleString();
+        }
+
+        function formatPercent(decimal) {
+            return (decimal * 100).toFixed(2) + '%';
+        }
+
+        function calculate() {
+            // Get inputs
+            const amount = parseFloat(document.getElementById('txnAmount').value);
+            const duration = parseFloat(document.getElementById('duration').value);
+            const feeRate = parseFloat(document.getElementById('feeRate').value) / 100;
+            const insuranceRate = parseFloat(document.getElementById('insuranceCost').value) / 100;
+            const costOfFundsAnnual = parseFloat(document.getElementById('costOfFunds').value) / 100;
+            const opsRate = parseFloat(document.getElementById('opsCost').value) / 100;
+
+            // Calculate revenue
+            const revenueFee = amount * feeRate;
+
+            // Calculate costs (prorate cost of funds for duration)
+            const costOfFunds = amount * (costOfFundsAnnual * (duration / 365));
+            const insuranceCost = amount * insuranceRate;
+            const opsCost = amount * opsRate;
+            const totalCosts = costOfFunds + insuranceCost + opsCost;
+
+            // Calculate profit
+            const netProfit = revenueFee - totalCosts;
+            const profitMargin = netProfit / revenueFee;
+
+            // Calculate ROE (annualized)
+            const roe = (netProfit / amount) * (365 / duration);
+
+            // Update results
+            document.getElementById('revenue').textContent = formatMoney(revenueFee);
+            document.getElementById('revenue').className = 'value positive';
+            document.getElementById('revenueRate').textContent = formatPercent(feeRate);
+
+            document.getElementById('costs').textContent = formatMoney(totalCosts);
+            document.getElementById('costs').className = 'value negative';
+            document.getElementById('costRate').textContent = formatPercent(totalCosts / amount);
+
+            document.getElementById('profit').textContent = formatMoney(netProfit);
+            document.getElementById('profit').className = netProfit >= 0 ? 'value positive' : 'value negative';
+            document.getElementById('profitRate').textContent = formatPercent(profitMargin) + ' margin';
+
+            document.getElementById('roe').textContent = formatPercent(roe);
+            document.getElementById('roe').className = roe >= 0.15 ? 'value positive' : 'value';
+
+            // Breakdown
+            const breakdown = `
+                <div class="breakdown-item">
+                    <span><strong>Revenue</strong></span>
+                    <span></span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Fee Income (${formatPercent(feeRate)})</span>
+                    <span class="positive">${formatMoney(revenueFee)}</span>
+                </div>
+
+                <div class="breakdown-item" style="margin-top: 15px;">
+                    <span><strong>Costs</strong></span>
+                    <span></span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Cost of Funds (${formatPercent(costOfFundsAnnual)} p.a. × ${duration} days)</span>
+                    <span class="negative">${formatMoney(costOfFunds)}</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Insurance (${formatPercent(insuranceRate)})</span>
+                    <span class="negative">${formatMoney(insuranceCost)}</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Operations (${formatPercent(opsRate)})</span>
+                    <span class="negative">${formatMoney(opsCost)}</span>
+                </div>
+
+                <div class="breakdown-item total">
+                    <span>NET PROFIT</span>
+                    <span>${formatMoney(netProfit)}</span>
+                </div>
+
+                <div class="breakdown-item">
+                    <span>Profit Margin</span>
+                    <span>${formatPercent(profitMargin)}</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Return on Equity (Annualized)</span>
+                    <span>${formatPercent(roe)}</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Capital Deployed</span>
+                    <span>${formatMoney(amount)}</span>
+                </div>
+                <div class="breakdown-item">
+                    <span>Duration</span>
+                    <span>${duration} days</span>
+                </div>
+            `;
+
+            document.getElementById('breakdownDetails').innerHTML = breakdown;
+            document.getElementById('resultsSection').style.display = 'block';
+
+            // Smooth scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Auto-calculate on load
+        window.addEventListener('load', () => {
+            calculate();
+        });
+    </script>
+</body>
+</html>

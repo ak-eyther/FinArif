@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx shadcn@latest init:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(npm install:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(npx tsc:*)",
+      "Bash(head:*)",
+      "Bash(npx next build:*)",
+      "Bash(npm run build:*)",
+      "Bash(timeout 10 npm run dev:*)",
+      "Bash(timeout 15 npm run dev)",
+      "Bash(wc:*)",
+      "Bash(npx tsx:*)",
+      "Read(//private/tmp/**)",
+      "Bash(grep:*)",
+      "Bash(kill:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: complete FinArif MVP dashboard implementation\n\n## Features Added\n\n### Dashboard & Navigation\n- Professional dashboard layout with sidebar navigation\n- Reusable MetricCard component with trend indicators\n- Main dashboard page with 4 key portfolio metrics\n- Recent transactions table\n\n### Pages\n- Transactions page with sortable, filterable table\n- Risk analysis page with scatter chart heat map\n- Capital management page with utilization tracking\n- Transaction details page with complete P&L breakdown\n\n### Business Logic\n- Risk scoring calculations (provider, insurance, transaction)\n- NIM calculations with proper cost of funds\n- Complete P&L engine (revenue, costs, margins)\n- Portfolio metrics aggregation\n\n### Infrastructure\n- TypeScript strict mode throughout\n- shadcn/ui components integration\n- Recharts for data visualization\n- Git branching strategy (develop, qa, uat, prod)\n- CI/CD pipeline configuration\n\n### Data\n- 18 realistic mock transactions\n- Kenyan providers and insurers\n- Risk-based pricing (3-5% fees)\n- Capital sources (Grant, Equity, Bank LOC, Investor Debt)\n\n## Technical Compliance\n- All money in cents (integers)\n- All percentages as decimals\n- No ''any'' types in TypeScript\n- Professional board-ready UI\n- Complete documentation in .claude/ directory\n\n🤖 Generated with Claude Code\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

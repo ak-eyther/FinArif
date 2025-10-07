@@ -1,0 +1,27 @@
+# Backups and old files
+finarif-dashboard-backup/
+*.backup
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+
+# Temporary files
+*.tmp
+tmp/
+temp/
